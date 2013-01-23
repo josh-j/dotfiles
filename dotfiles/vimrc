@@ -1,0 +1,253 @@
+
+
+"-------------------------------------------------------------------------------
+" Text formatting
+"-------------------------------------------------------------------------------
+
+set autoindent                       " always set autoindenting on
+set expandtab                        " insert spaces when the tab key is pressed
+set shiftround                       " use multiple of shiftwidth when indenting
+                                     " with '<' and '>'
+set shiftwidth=4                     " number of spaces to use for autoindenting
+set smarttab                         " insert tabs on the start of a line
+                                     " according to shiftwidth, not tabstop
+set tabstop=4                        " a tab is four spaces
+set wrap                             " wrap too long lines.
+
+"-------------------------------------------------------------------------------
+" UI settings
+"-------------------------------------------------------------------------------
+
+syntax on                            " enable syntax highlighting
+colorscheme Tomorrow-Night-Eighties
+
+set t_so=[7m                       " set escape codes for standout mode
+set t_ZH=[3m                       " set escape codes for italics mode
+set t_Co=256                         " force 256 colors by default
+
+set backspace=indent,eol,start       " allow backspacing over everything in
+                                     " insert mode
+set colorcolumn=+1                   " display a one column wide right gutter
+set nofoldenable                     " disable code folding by default
+set number                           " always show line numbers
+set numberwidth=5                    " we are good for up to 99999 lines
+set ruler                            " show the cursor position all the time
+set showcmd                          " display incomplete commands
+" set textwidth=120                    " default text width
+
+" Resize splits when the window is resized.
+au VimResized * exe "normal! \<c-w>="
+
+" GTK
+set guicursor=a:blinkon0
+" set guioptions-=m  "remove menu bar
+set guioptions-=T  "remove toolbar
+" set guioptions-=r  "remove right-hand scroll bar
+" set guioptions-=L  "remove left-hand scroll bar
+" set guifont=Courier_New:h10
+" set guifont=gohufont-14"
+" set guifont=Consolas:h11:b
+" set guifont=Consolas:h10
+set guifont="Source Code Pro":h10
+
+"-------------------------------------------------------------------------------
+" Visual cues
+"-------------------------------------------------------------------------------
+
+set incsearch                        " show search matches as you type
+" set listchars=tab:▸\ ,trail:·        " set custom characters for non-printable
+                                     " characters
+set matchtime=3                      " set brace match time
+set scrolloff=3                      " maintain more context around the cursor
+" set showbreak=↪                      " character to display in front of wrapper
+                                     " lines
+set showmatch                        " enable brace highlighting
+set smartcase                        " ignore case if search pattern is all
+                                     " lowercase, case-sensitive otherwise
+set visualbell                       " only show a visual cue when an error
+                                     " occurs
+
+
+"-------------------------------------------------------------------------------
+" Behavioural settings
+"-------------------------------------------------------------------------------
+
+set autoread                         " automatically reload a file when it has
+                                     " been changed
+set backup                           " enable backups
+set backupdir=~/.vim/tmp         " set the backup directory
+set undofile                         " enable persistent undo
+set undodir=~/.vim/tmp           " persistent undo directory
+set clipboard=unnamed                " use the system clipboard by default
+set directory=~/.vim/tmp         " set the swap directory
+set hidden                           " be able to put the current buffer to the
+                                     " background without writing to disk and
+                                     " remember marks and undo-history when a
+                                     " background buffer becomes current again
+set history=50                       " keep 50 lines of command line history
+set printoptions=paper:a4,duplex:on  " print on a4 by default and enable duplex
+                                     " printing
+
+"-------------------------------------------------------------------------------
+" Key remappings
+"-------------------------------------------------------------------------------
+
+let mapleader=","                    " set our personal modifier key to ','
+
+set pastetoggle=<F2>                 " F2 temporarily disables formatting when
+                                     " pasting text
+
+" Map Ctrl-BackSpace to delete the previous word. Since URxvt maps
+" Ctrl-BackSpace to ^[^?, we need to specify that key combination here as well.
+imap <Esc><BS> <C-W>
+
+" Quickly edit and reload the.vimrc file.
+nmap <silent> <leader>ov :e $MYVIMRC<CR>
+nmap <silent> <leader>sv :so $MYVIMRC<CR>
+
+" Map Y to copy to the end of the line (which is more logical, also according
+" to the Vim manual.
+map Y y$
+
+" Remap Ctrl-s to save the current file.
+map <silent> <C-s> :w<CR>
+imap <silent> <C-s> <Esc>:w<CR>a
+
+" Remap Ctrl-q to close the current buffer
+nmap <silent> <C-q> :bdelete<CR>
+
+" Remap K to do nothing instead of searching the man pages.
+nnoremap K <nop>
+
+" Remap <leader>m to execute a make.
+function! Make()
+  exe "wa"
+  exe "mak"
+  exe "cw"
+  call feedkeys("<CR>", "n")
+  call feedkeys("<CR>", "n")
+endfunction
+
+nmap <silent> <leader>m :silent! call Make()<CR>:redraw!<CR>
+
+" Remap Ctrl-k and Ctrl-j to jump to the previous and next compiler error
+" respectively.
+nmap <silent> <C-k> :cp<CR>
+nmap <silent> <C-j> :cn<CR>
+
+" Map ^ to grep word under cursor using Ack.
+nmap ^ :Ack<CR><CR>
+
+" don't jump over text-wrapped lines
+map j gj
+map k gk
+
+" nice indent/deindent
+vmap <TAB> >gv
+vmap <S-TAB> <gv
+
+" Instead of escape
+:imap jk <Esc>
+
+"-------------------------------------------------------------------------------
+" Vundle
+"-------------------------------------------------------------------------------
+
+set nocompatible               " be iMproved
+filetype off                   " required!
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc('$HOME/.vim/bundle/')
+
+" let Vundle manage Vundle
+" required! 
+Bundle 'gmarik/vundle'
+
+" My Bundles here:
+"
+" original repos on github
+Bundle 'tpope/vim-fugitive'
+Bundle 'Lokaltog/vim-easymotion'
+" Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Bundle 'tpope/vim-rails.git'
+Bundle 'rson/vim-conque'
+Bundle 'tpope/vim-sensible'
+Bundle 'scrooloose/nerdtree'
+Bundle 'Shougo/vimproc'
+Bundle 'scrooloose/syntastic'
+" Bundle 'kana/vim-filetype-haskell'
+" Bundle 'ujihisa/neco-ghc'
+" Bundle 'eagletmt/ghcmod-vim'
+" Bundle 'bitc/lushtags'
+" Bundle 'dag/vim2hs'
+Bundle 'Rip-Rip/clang_complete'
+Bundle 'ervandew/supertab'
+Bundle 'kien/ctrlp.vim'
+" vim-scripts repos
+Bundle 'L9'
+filetype plugin indent on " required!
+
+"-------------------------------------------------------------------------------
+" CtrlP 
+"-------------------------------------------------------------------------------
+
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
+"let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'  " Windows'
+"set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+"set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+"let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+
+
+"-------------------------------------------------------------------------------
+" Clang 
+"-------------------------------------------------------------------------------
+
+" let g:clang_exec = '"C:\\clang\\clang.exe'
+" let g:clang_user_options = '-std=c++11 -IC:\\MinGW\\lib\\gcc\\mingw32\\4.7.0\\include\\c++ -IC:\\MinGW\\lib\\gcc\\mingw32\\4.7.0\\include\\c++\\mingw32 -IC:\\MinGW\\lib\\gcc\\mingw32\\4.7.0\\include\\c++\\backward -IC:\\MinGW\\lib\\gcc\\mingw32\\4.7.0\\include -IC:\\MinGW\\lib\\gcc\\mingw32\\4.7.0\\include-fixed 2>NUL || exit 0"'
+
+" "let g:clang_hl_errors = 1
+" "let g:clang_periodic_quickfix = 1
+
+" "let g:clang_use_library = 0
+
+
+"-------------------------------------------------------------------------------
+" Haskell
+"-------------------------------------------------------------------------------
+
+" " use ghc functionality for haskell files
+" au Bufenter *.hs compiler ghc
+
+" " switch on syntax highlighting
+" syntax on
+
+" " enable filetype detection, plus loading of filetype plugins
+" filetype plugin on
+
+" " configure browser for haskell_doc.vim
+" let g:haddock_browser = "C:/Program Files (x86)/internet Explorer/iexplorer.exe"
+" let g:haddock_docdir = "C:/Users/Siod/.vim/misc/haddock-html"
+" let g:haddock_indexfiledir = "C:/Users/Siod/.vim/misc/haddock-html"
+" let g:ghc="C:/Program Files (x86)/Haskell Platform/2011.4.0.0/bin"
+
+"-------------------------------------------------------------------------------
+" Syntastic
+"-------------------------------------------------------------------------------
+
+"let g:syntastic_check_on_open=1
+"let g:syntastic_echo_current_error=1
+"let g:syntastic_enable_signs=1
+"let g:syntastic_enable_balloons = 1
+"let g:syntastic_auto_jump=1
+
+"let g:syntastic_mode_map = { 'mode': 'active',
+                               \ 'active_filetypes': ['ruby', 'php'],
+                               \ 'passive_filetypes': ['puppet'] }
+
+"let g:syntastic_quiet_warnings=0
+
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*

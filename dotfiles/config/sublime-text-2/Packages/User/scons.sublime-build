@@ -1,0 +1,18 @@
+{
+  "cmd": ["scons.bat"],
+  "file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$",
+  // this assumes you have a project structure with a folder that includes the project files and above that folder is the sconstruct file
+  "working_dir": "${project_path..:${folder}}",
+  "encoding": "cp1252",
+  "variants":
+  [
+    {
+      "name": "Clean",
+      "cmd": ["scons.bat", "clean"]
+    },
+    {
+      "name": "Run",
+      "cmd": ["scons.bat", "run"]
+    }
+  ]
+}

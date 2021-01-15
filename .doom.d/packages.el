@@ -62,7 +62,11 @@
 (package! lsp-treemacs)
 (package! lsp-ui)
 (package! company-lsp)
-(package! company-posframe)
+;(package! company-posframe)
+(package! company-quickhelp)
+(package! company-box)
+(package! prescient)
+(package! company-prescient)
 (package! spinner)                      ; required by lsp-mode
 ;; (package! rust-mode)
 ;; (package! lsp-rust :ignore t)

@@ -1,0 +1,1 @@
+/home/sio/.doom.d

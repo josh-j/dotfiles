@@ -1,0 +1,562 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Basic behaviour and appearance
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Show trailing spaces
+;(setq-default show-trailing-whitespace t)
+
+;; Disable trailing whitespaces in the minibuffer
+;(add-hook! '(minibuffer-setup-hook doom-popup-mode-hook)
+;  (setq-local show-trailing-whitespace nil))
+
+;; Set tabs to indent as white spaces and set def. tab width to 4 white spaces
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+
+;; Minimalistic Emacs at startup
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(set-scroll-bar-mode nil)
+
+;; Maximize first frame
+;(set-frame-parameter nil 'fullscreen 'maximized)
+
+;; File names relative to project (not root)
+(setq +doom-modeline-buffer-file-name-style 'relative-from-project)
+
+;; Don't ask when killing emacs
+(setq confirm-kill-emacs nil)
+
+;; Resize windows interactively.
+;(def-package! resize-window
+;  :commands (resize-window))
+
+;; Reuse dired buffers
+;(put 'dired-find-alternate-file 'disabled nil)
+
+;; Smooth mouse scrolling
+;(setq mouse-wheel-scroll-amount '(2 ((shift) . 1))  ; scroll two lines at a time
+;      mouse-wheel-progressive-speed nil             ; don't accelerate scrolling
+;      mouse-wheel-follow-mouse t                    ; scroll window under mouse
+;      scroll-step 1)
+
+;; Do not automatically copy selected text.
+(setq select-enable-primary nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Overall theme & visual behaviour
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
+;; are the three important ones:
+;;
+;; + `doom-font'
+;; + `doom-variable-pitch-font'
+;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;;
+;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+;; font string. You generally only need these two:
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+
+;; Font setup
+(setq doom-font (font-spec :family "Fira Code Medium" :size 14)
+      doom-variable-pitch-font (font-spec :family "Fira Code Medium")
+      doom-unicode-font (font-spec :family "DejaVu Sans Mono")
+      doom-big-font (font-spec :family "Fira Code Medium" :size 16))
+
+;; (setq doom-font (font-spec :family "Meslo LG M DZ for Powerline" :size 20)
+;;       doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline")
+;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono")
+;;       doom-big-font (font-spec :family "Meslo LG M DZ for Powerline" :size 24))
+
+
+
+;; All themes are safe to load
+;(setq custom-safe-themes t)
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+;(setq doom-theme 'doom-one)
+;;(setq doom-theme 'doom-vibrant)
+;;(setq doom-theme 'doom-nord)
+;;(setq doom-theme 'doom-nova)
+;;(setq doom-theme 'doom-dracula)
+;;(setq doom-theme 'doom-solarized-light)
+;;(setq doom-theme 'doom-sourcerer)
+;(setq doom-theme 'doom-laserwave)
+
+(use-package! doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-laserwave t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (doom-themes-treemacs-config)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+
+
+;; User brighter comments for doom one, particularly
+;; useful for reveal js presentations that inherits
+;; code highlighting from one's emacs theme.
+(setq doom-one-brighter-comments t)
+(setq doom-one-comment-bg nil)
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+;(setq display-line-numbers-type t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Cursor movement
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;(after! smartparens
+;  (smartparens-global-mode -1))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Persp / workspaces
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;(setq-default +workspaces-switch-project-function #'ignore)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Projectile
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (setq projectile-enable-caching nil)
+;; (setq projectile-project-compilation-cmd "./run.py")
+(setq projectile-project-search-path '("~/Projects/"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; PlantUML
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org-mode and org-capture
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Personal variables?
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Popups
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Select popup buffers by default
+;(setq +popup-defaults
+;  (list :side   'bottom
+;        :height 0.16
+;        :width  40
+;        :quit   t
+;        :select t
+;        :ttl    5))
+
+;; TODO(dfrib): See if I really feel that I need this customization?
+;; Select the IList buffer when it is shown
+;(after! imenu-list
+;  (set-popup-rule! "^\\*Ilist"
+;    :side 'right :size 35 :quit nil :select t :ttl 0))
+
+;; Larger undo tree window
+;(after! undo-tree
+;  (set-popup-rule! " \\*undo-tree\\*" :slot 2 :side 'right :size 40 :modeline nil :select t :quit t))
+
+;; Larger org src edit
+;(after! org
+;  (set-popup-rule! "^\\*Org Src" :side 'bottom :slot -2 :height 0.6 :width 0.5 :select t :autosave t :ttl nil :quit nil))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Yasnippet file templates
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Custom file templates
+;; Just place them in ~/.doom.d/snippets - these will take precedence over the
+;; default ones.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Backups and caching
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;(setq make-backup-files t
+;      backup-by-copying t
+;      delete-old-versions t
+;      kept-new-versions 6
+;      kept-old-versions 2
+;      version-control t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Flycheck
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;(after! flycheck
+;  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+;  (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+;  )
+
+;; Let flycheck search for required files in the `load-path' and the current folder.
+;(setq flycheck-emacs-lisp-load-path '("./"))
+
+;; disable using hooks
+;; (add-hook 'text-mode-hook (lambda ()
+;;                             (flycheck-mode -1)))
+;; (add-hook 'org-mode-hook (lambda ()
+;; (flycheck-mode -1)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; IEDIT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package! ivy
+  :commands ivy-mode
+  :hook ((minibuffer-setup . aorst/minibuffer-defer-garbage-collection)
+         (minibuffer-exit . aorst/minibuffer-restore-garbage-collection))
+  :bind (("C-x b" . ivy-switch-buffer)
+         ("C-x C-b" . ivy-switch-buffer))
+  :custom-face
+  (ivy-org ((t (:inherit default))))
+  :custom
+  (ivy-count-format "")
+  (ivy-ignore-buffers '("\\` " "\\`\\*"))
+  (ivy-display-style nil)
+  (ivy-minibuffer-faces nil)
+  (ivy-minibuffer-faces '(default default default default))
+  (ivy-use-virtual-buffers t)
+  (enable-recursive-minibuffers t)
+  :init
+  (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  (defun aorst/minibuffer-defer-garbage-collection ()
+    "Defer garbage collection for minibuffer"
+    (setq gc-cons-threshold most-positive-fixnum))
+  (defun aorst/minibuffer-restore-garbage-collection ()
+    "Resotre garbage collection settings."
+    (run-at-time
+     1 nil (lambda () (setq gc-cons-threshold aorst--gc-cons-threshold))))
+  (ivy-mode 1))
+
+(use-package! phi-search)
+(use-package! mc-extras)
+(use-package! multiple-cursors
+  :commands (mc/cycle-backward
+             mc/cycle-forward)
+  :bind (("S-<mouse-1>" . mc/add-cursor-on-click)
+         ("C-c m" . hydrant/mc/body)
+         :map mc/keymap
+         ("<return>" . nil)
+         ("C-s" . phi-search)
+         ("C-r" . phi-search-backward))
+  :config
+  (when (fboundp #'defhydra)
+    (defhydra hydrant/mc (:hint nil :color pink)
+      "
+ ^Select^                 ^Discard^                      ^Edit^               ^Navigate^
+ _M-s_: split lines       _M-SPC_:  discard current      _&_: align           _(_: cycle backward
+ _s_:   select regexp     _b_:      discard blank lines  _#_: insert numbers  _)_: cycle forward
+ _n_:   select next       _d_:      remove duplicated    ^ ^                  ^ ^
+ _p_:   select previous   _q_ or _g_: exit hydrant       ^ ^                  ^ ^
+ _C_:   select next line  _G_:      exit mc mode"
+      ("M-s" mc/edit-ends-of-lines)
+      ("s" mc/mark-all-in-region-regexp)
+      ("n" mc/mark-next-like-this-word)
+      ("p" mc/mark-previous-like-this-word)
+      ("&" mc/vertical-align-with-space)
+      ("(" mc/cycle-backward)
+      (")" mc/cycle-forward)
+      ("M-SPC" mc/remove-current-cursor)
+      ("b" mc/remove-cursors-on-blank-lines)
+      ("d" mc/remove-duplicated-cursors)
+      ("C" mc/mark-next-lines)
+      ("#" mc/insert-numbers)
+      ("q" mc/remove-duplicated-cursors :exit t)
+      ("g" mc/remove-duplicated-cursors :exit t)
+      ("G" mc/keyboard-quit :exit t))))
+
+(use-package! expand-region
+  :bind (("C-c e" . hydrant/er/body))
+  :config
+  (when (fboundp #'defhydra)
+    (defhydra hydrant/er (:color pink :hint nil)
+      "
+ ^Expand/Discard^                ^Mark^
+ _e_:      expand region         _(_: inside pairs
+ _r_:      reduce region         _)_: around pairs
+ _g_ or _q_: exit hydrant          _'_: inside quotes
+ _G_:      discard region, exit  _\"_: around quotes
+ ^ ^  ^ ^                          _p_: paragraph"
+      ("e" er/expand-region)
+      ("r" er/contract-region)
+      ("p" er/mark-paragraph)
+      ("(" er/mark-inside-pairs)
+      (")" er/mark-outside-pairs)
+      ("'" er/mark-inside-quotes)
+      ("\"" er/mark-outside-quotes)
+      ("g" ignore :exit t)
+      ("q" ignore :exit t)
+      ("G" (lambda () (interactive) (deactivate-mark t)) :exit t)
+      ("Q" (lambda () (interactive) (deactivate-mark t)) :exit t))))
+
+(use-package! hideshow
+  :after transient
+  :hook (prog-mode . hs-minor-mode)
+  :bind (:map prog-mode-map
+         ("<f6>" . hydrant/hideshow-menu/body))
+  :config
+  (when (fboundp #'defhydra)
+    (defhydra hydrant/hideshow-menu (:color pink :hint nil)
+      "
+ ^Hide^       ^Show^       ^Exit^
+ _ha_: all    _sa_: all    _qs_: quit show all
+ _hb_: block  _sb_: block  _qh_: quit hide all
+ ^  ^         ^  ^         _qq_: quit"
+      ("ha" hs-hide-all)
+      ("hb" hs-hide-block)
+      ("sa" hs-show-all)
+      ("sb" hs-show-block)
+      ("qq" ignore :exit t)
+      ("qs" hs-show-all :exit t)
+      ("qh" hs-hide-all :exit t))))
+
+(use-package! edit-indirect
+  :hook ((edit-indirect-after-creation . aorst/edit-indirect-header-line-setup))
+  :bind (:map edit-indirect-mode-map
+         ("C-c C-c" . edit-indirect-commit)
+         ("C-c C-k" . edit-indirect-abort)
+         ("C-c '" . nil))
+  :config
+  (defun aorst/edit-indirect-header-line-setup ()
+    (setq-local
+     header-line-format
+     (substitute-command-keys
+      "\\<edit-indirect-mode-map>Edit, then exit with `\\[edit-indirect-commit]' or abort with `\\[edit-indirect-abort]'"))))
+
+(use-package! separedit
+  :hook (separedit-buffer-creation . aorst/separedit-header-line-setup)
+  :bind (:map prog-mode-map
+         ("C-c '" . separedit)
+         :map edit-indirect-mode-map
+         ("C-c '" . separedit))
+  :custom
+  (separedit-default-mode 'gfm-mode)
+  :config
+  (defun aorst/separedit-header-line-setup ()
+    (setq-local
+     header-line-format
+     (substitute-command-keys
+      "\\<edit-indirect-mode-map>Edit, then exit with `\\[separedit-commit]' or abort with `\\[edit-indirect-abort]'"))))
+
+
+(use-package! iedit
+  :bind (("M-n" . aorst/iedit-current-or-expand)
+         ("C-c i" . aorst/iedit-hydrant))
+  :custom
+  (iedit-toggle-key-default nil)
+  :custom-face
+  (iedit-occurrence ((t (:background unspecified
+                         :foreground unspecified
+                         :inverse-video unspecified
+                         :inherit region))))
+  :init
+  (defun aorst/iedit-to-mc-hydrant ()
+    "Calls `iedit-to-mc-mode' and opens hydra for multiple cursors."
+    (interactive)
+    (iedit-switch-to-mc-mode)
+    (hydrant/mc/body))
+  (defun aorst/iedit-current-or-expand (&optional arg)
+    "Select only currnent occurrence with `iedit-mode'.  Expand to
+  next occurrence if `iedit-mode' is already active."
+    (interactive "P")
+    (if (bound-and-true-p iedit-mode)
+        (if (symbolp arg)
+            (iedit-expand-down-to-occurrence)
+          (iedit-expand-up-to-occurrence))
+      (iedit-mode 1)))
+  (when (fboundp #'defhydra)
+    (defhydra hydrant/iedit (:hint nil :color pink)
+      "
+ ^Select^                  ^Discard^                   ^Edit^               ^Navigate^
+ _n_: next occurrence      _M-SPC_:  toggle selection  _u_: uppercase       _(_: previous selection
+ _p_: previous occurrence  _q_ or _g_: exit hydrant      _d_: downcase        _)_: next selection
+ ^ ^                       _G_:      exit iedit-mode   _#_: insert numbers
+ ^ ^                       _m_:      switch to mc"
+      ("n" iedit-expand-down-to-occurrence)
+      ("m" aorst/iedit-to-mc-hydrant :exit t)
+      ("p" iedit-expand-up-to-occurrence)
+      ("u" iedit-upcase-occurrences)
+      ("d" iedit-downcase-occurrences)
+      ("#" iedit-number-occurrences)
+      ("(" iedit-prev-occurrence)
+      (")" iedit-next-occurrence)
+      ("M-SPC" iedit-toggle-selection)
+      ("q" ignore :exit t)
+      ("g" ignore :exit t)
+      ("G" (lambda () (interactive) (iedit-mode -1)) :exit t))
+    (defun aorst/iedit-hydrant ()
+      "toggle iedit mode for item under point, and open `hydrant/iedit'."
+      (interactive)
+      (ignore-errors
+        (unless (bound-and-true-p iedit-mode)
+          (iedit-mode 1))
+        (hydrant/iedit/body)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; LSP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (after! ccls
+;;    (setq ccls-initialization-options '(:index (:comments 2) :completion (:detailedLabel t)))
+;;    (set-lsp-priority! 'ccls 2)) ; optional as ccls is the default in Doom
+
+;; (setq lsp-clients-clangd-args '("-j=4"
+;;                                 "--background-index"
+;;                                 "--clang-tidy"
+;;                                 "--pch-storage=memory"
+;;                                 "--completion-style=detailed"
+;;                                 "--header-insertion=never"))
+;; (after! lsp-clangd (set-lsp-priority! 'clangd 2))
+(use-package! yasnippet
+  :config
+  (add-to-list 'yas-key-syntaxes 'yas-shortest-key-until-whitespace))
+
+(use-package! lsp-mode
+  :hook (((rust-mode c-mode c++-mode java-mode elixir-mode) . lsp)
+         (lsp-mode . yas-minor-mode))
+  :custom-face
+  (lsp-modeline-code-actions-face ((t (:inherit mode-line))))
+  :custom
+  (lsp-enable-links nil)
+  (lsp-keymap-prefix "C-c l")
+  (lsp-rust-clippy-preference "on")
+  (lsp-prefer-capf t)
+  (lsp-enable-indentation nil)
+  (lsp-enable-symbol-highlighting t)
+  (lsp-rust-server 'rust-analyzer)
+  (lsp-session-file (expand-file-name ".lsp-session" user-emacs-directory))
+  (lsp-headerline-breadcrumb-enable nil))
+
+(defun doom/escape ()
+  "Quit in current context.
+
+When there is an active minibuffer and we are not inside it close
+it.  When we are inside the minibuffer use the regular
+`minibuffer-keyboard-quit' which quits any active region before
+exiting.  When there is no minibuffer `keyboard-quit' unless we
+are defining or executing a macro."
+  (interactive)
+  (cond ((active-minibuffer-window)
+         (if (minibufferp)
+             (minibuffer-keyboard-quit)
+           (abort-recursive-edit)))
+        ((bound-and-true-p iedit-mode)
+         (iedit-quit))
+        (t
+         (unless (or defining-kbd-macro
+                     executing-kbd-macro)
+           (keyboard-quit)))))
+(global-set-key [remap keyboard-quit] #'doom/escape)
+
+(use-package! lsp-ui
+  :after lsp-mode
+  :commands lsp-ui-mode
+  :bind (:map lsp-ui-mode-map
+         ("M-." . lsp-ui-peek-find-definitions)
+         ("M-/" . lsp-ui-peek-find-references))
+  :custom
+  (lsp-ui-doc-border (face-attribute 'mode-line-inactive :background))
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-imenu-enable nil)
+  (lsp-ui-doc-delay 1 "higher than eldoc delay")
+  (lsp-ui-doc-position 'at-point)
+  :config
+  (when (fboundp #'doom/escape)
+    (define-advice lsp-ui-doc--make-request (:around (foo))
+      (unless (eq this-command 'doom/escape)
+        (funcall foo))))
+  (lsp-ui-mode))
+
+(use-package! lsp-java
+  :when (file-exists-p "/usr/lib/jvm/java-11-openjdk/bin/java")
+  :custom (lsp-java-java-path "/usr/lib/jvm/java-11-openjdk/bin/java"))
+
+(use-package! dap-mode
+  :hook (lsp-mode . dap-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; CCLS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; https://github.com/MaskRay/ccls/wiki/lsp-mode
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; COMPANY
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package! company
+  :bind (:map company-active-map
+         ("TAB" . company-complete-common-or-cycle)
+         ("<tab>" . company-complete-common-or-cycle)
+         ("<S-Tab>" . company-select-previous)
+         ("<backtab>" . company-select-previous)
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous))
+  :hook (after-init . global-company-mode)
+  :custom
+  (company-tooltip-limit 5)
+  (company-tooltip-minimum 5)
+  (company-transformers nil)
+  (company-lsp-cache-candidates 1)
+  (company-require-match 'never)
+  (company-minimum-prefix-length 2)
+  (company-tooltip-align-annotations t)
+  (company-frontends '(company-pseudo-tooltip-unless-just-one-frontend
+                       company-preview-frontend
+                       company-echo-metadata-frontend))
+  (company-backends '(company-capf company-files))
+  (company-tooltip-minimum-width 80)
+  (company-tooltip-maximum-width 60))
+
+(use-package! company-posframe
+  :after company
+  :custom
+  (company-posframe-quickhelp-show-header nil)
+  (company-posframe-show-indicator nil)
+  (company-posframe-show-metadata nil)
+  (company-posframe-quickhelp-show-params
+   (list :poshandler #'company-posframe-quickhelp-right-poshandler
+         :internal-border-width 1
+         :timeout 60
+         :internal-border-color (face-attribute 'mode-line :background)
+         :no-properties nil))
+  (company-posframe-show-params
+   (list :poshandler #'company-posframe-quickhelp-right-poshandler
+         :internal-border-width 1
+         :timeout 60
+         :internal-border-color (face-attribute 'mode-line :background)
+         :no-properties nil))
+  :config
+  (company-posframe-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Code formatting
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(after! c++-mode
+  (set-formatter! 'c++-mode 'clang-format)
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; GDB
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Open debugging window style
+;(setq gdb-many-windows t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Personalized bindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;(load! "+bindings")

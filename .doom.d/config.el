@@ -18,7 +18,7 @@
 (set-scroll-bar-mode nil)
 
 ;; Maximize first frame
-;(set-frame-parameter nil 'fullscreen 'maximized)
+(set-frame-parameter nil 'fullscreen 'maximized)
 
 ;; File names relative to project (not root)
 (setq +doom-modeline-buffer-file-name-style 'relative-from-project)
@@ -60,9 +60,13 @@
 
 ;; Font setup
 (setq doom-font (font-spec :family "Fira Code Medium" :size 14)
-      doom-variable-pitch-font (font-spec :family "Fira Code Medium")
-      doom-unicode-font (font-spec :family "DejaVu Sans Mono")
-      doom-big-font (font-spec :family "Fira Code Medium" :size 16))
+      doom-unicode-font (font-spec :family "hack" :size 12)
+      doom-big-font (font-spec :family "Fira Code Medium" :size 16)
+      doom-variable-pitch-font (font-spec :family "hack" :size 12))
+
+;(setq doom-modeline-height 1)
+;(set-face-attribute 'mode-line nil :family "Noto Sans" :height 100)
+;(set-face-attribute 'mode-line-inactive nil :family "Noto Sans" :height 100)
 
 ;; (setq doom-font (font-spec :family "Meslo LG M DZ for Powerline" :size 20)
 ;;       doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline")
@@ -84,38 +88,76 @@
 ;;(setq doom-theme 'doom-dracula)
 ;;(setq doom-theme 'doom-solarized-light)
 ;;(setq doom-theme 'doom-sourcerer)
-;(setq doom-theme 'doom-laserwave)
 
-(use-package doom-themes
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-laserwave t)
+(use-package! treemacs-all-the-icons
+  :after treemacs)
 
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
+(setq doom-theme 'doom-laserwave)
+(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+      doom-themes-enable-italic t
+      doom-themes-treemacs-theme "all-the-icons"
+      doom-themes-treemacs-enable-variable-pitch t) ; if nil, italics is universally disabled
 
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  (doom-themes-treemacs-config)
-
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
-
+;; (after! treemacs
+;;   (treemacs-load-theme "doom-color"))
 
 ;; User brighter comments for doom one, particularly
 ;; useful for reveal js presentations that inherits
 ;; code highlighting from one's emacs theme.
-(setq doom-one-brighter-comments t)
-(setq doom-one-comment-bg nil)
+;(setq doom-one-brighter-comments t)
+;(setq doom-one-comment-bg nil)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-;(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Speed up startup
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defvar centaur-gc-cons-threshold (if (display-graphic-p) 16000000 1600000)
+  "The default value to use for `gc-cons-threshold'. If you experience freezing,
+decrease this. If you experience stuttering, increase this.")
+
+(defvar centaur-gc-cons-upper-limit (if (display-graphic-p) 400000000 100000000)
+  "The temporary value for `gc-cons-threshold' to defer it.")
+
+(defvar centaur-gc-timer (run-with-idle-timer 10 t #'garbage-collect)
+  "Run garbarge collection when idle 10s.")
+
+(defvar default-file-name-handler-alist file-name-handler-alist)
+
+(setq file-name-handler-alist nil)
+(setq gc-cons-threshold centaur-gc-cons-upper-limit
+      gc-cons-percentage 0.5)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            "Restore defalut values after startup."
+            (setq file-name-handler-alist default-file-name-handler-alist)
+            (setq gc-cons-threshold centaur-gc-cons-threshold
+                  gc-cons-percentage 0.1)
+
+            ;; GC automatically while unfocusing the frame
+            ;; `focus-out-hook' is obsolete since 27.1
+            (if (boundp 'after-focus-change-function)
+                (add-function :after after-focus-change-function
+                  (lambda ()
+                    (unless (frame-focus-state)
+                      (garbage-collect))))
+              (add-hook 'focus-out-hook 'garbage-collect))
+
+            ;; Avoid GCs while using `ivy'/`counsel'/`swiper' and `helm', etc.
+            ;; @see http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+            (defun my-minibuffer-setup-hook ()
+              (setq gc-cons-threshold centaur-gc-cons-upper-limit))
+
+            (defun my-minibuffer-exit-hook ()
+              (setq gc-cons-threshold centaur-gc-cons-threshold))
+
+            (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+            (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cursor movement
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -136,6 +178,7 @@
 (setq projectile-project-search-path '("~/Projects/"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; PlantUML
 
 
@@ -151,379 +194,65 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Popups
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Select popup buffers by default
-;(setq +popup-defaults
-;  (list :side   'bottom
-;        :height 0.16
-;        :width  40
-;        :quit   t
-;        :select t
-;        :ttl    5))
-
-;; TODO(dfrib): See if I really feel that I need this customization?
-;; Select the IList buffer when it is shown
-;(after! imenu-list
-;  (set-popup-rule! "^\\*Ilist"
-;    :side 'right :size 35 :quit nil :select t :ttl 0))
-
-;; Larger undo tree window
-;(after! undo-tree
-;  (set-popup-rule! " \\*undo-tree\\*" :slot 2 :side 'right :size 40 :modeline nil :select t :quit t))
-
-;; Larger org src edit
-;(after! org
-;  (set-popup-rule! "^\\*Org Src" :side 'bottom :slot -2 :height 0.6 :width 0.5 :select t :autosave t :ttl nil :quit nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Yasnippet file templates
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Custom file templates
-;; Just place them in ~/.doom.d/snippets - these will take precedence over the
-;; default ones.
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Backups and caching
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(setq make-backup-files t
-;      backup-by-copying t
-;      delete-old-versions t
-;      kept-new-versions 6
-;      kept-old-versions 2
-;      version-control t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Flycheck
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(after! flycheck
-;  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-;  (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
-;  )
 
-;; Let flycheck search for required files in the `load-path' and the current folder.
-;(setq flycheck-emacs-lisp-load-path '("./"))
 
-;; disable using hooks
-;; (add-hook 'text-mode-hook (lambda ()
-;;                             (flycheck-mode -1)))
-;; (add-hook 'org-mode-hook (lambda ()
-;; (flycheck-mode -1)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; IEDIT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; HYDRA
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; LSP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (after! ccls
-;;    (setq ccls-initialization-options '(:index (:comments 2) :completion (:detailedLabel t)))
-;;    (set-lsp-priority! 'ccls 2)) ; optional as ccls is the default in Doom
 
-;; (setq lsp-clients-clangd-args '("-j=4"
-;;                                 "--background-index"
-;;                                 "--clang-tidy"
-;;                                 "--pch-storage=memory"
-;;                                 "--completion-style=detailed"
-;;                                 "--header-insertion=never"))
-;; (after! lsp-clangd (set-lsp-priority! 'clangd 2))
-
-(after! company
-  (setq company-minimum-prefix-length 2
-        company-quickhelp-delay nil
-        company-show-numbers t
-        company-global-modes '(not comint-mode erc-mode message-mode help-mode gud-mode)
-        ))
-
-(use-package! company-lsp
-  :after lsp-mode
-  :config
-  (setq company-transformers nil company-lsp-cache-candidates nil)
-  (set-company-backend! 'lsp-mode 'company-lsp)
-  )
-
-(after! flycheck
-  ;; (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
-  (global-flycheck-mode -1)
-  )
-
-;; LSP-UI
-;;https://github.com/MaskRay/Config
-(use-package! lsp-ui
-  ;:load-path "~/Dev/Emacs/lsp-ui"
-  :commands lsp-ui-mode
-  :config
-  (setq
-   ;; Disable sideline hints
-   lsp-ui-sideline-enable nil
-   lsp-ui-sideline-ignore-duplicate t
-   ;; Disable imenu
-   lsp-ui-imenu-enable nil
-   ;; Disable ui-doc (already present in minibuffer)
-   lsp-ui-doc-enable nil
-   lsp-ui-doc-header nil
-   lsp-ui-doc-include-signature nil
-   lsp-ui-doc-background (doom-color 'base4)
-   lsp-ui-doc-border (doom-color 'fg)
-   ;; Enable ui-peek
-   lsp-ui-peek-enable t
-   ;lsp-ui-peek-fontify t
-   lsp-ui-peek-always-show t
-   lsp-ui-peek-force-fontify nil
-   lsp-ui-peek-expand-function (lambda (xs) (mapcar #'car xs))
-   ;; Flycheck
-   lsp-ui-flycheck-enable t
-   )
-
-  (custom-set-faces
-   '(ccls-sem-global-variable-face ((t (:underline t :weight extra-bold))))
-   '(lsp-face-highlight-read ((t (:background "sea green"))))
-   '(lsp-face-highlight-write ((t (:background "brown4"))))
-   ;; '(lsp-ui-peek-peek ((t (:background "sea green"))))
-   ;; '(lsp-ui-peek-list ((t (:background "deep sky blue"))))
-   '(lsp-ui-peek-highlight ((t (:background "deep sky blue"))))
-   '(lsp-ui-sideline-current-symbol ((t (:foreground "grey38" :box nil))))
-   '(lsp-ui-sideline-symbol ((t (:foreground "grey30" :box nil)))))
-
-   ;; (map! :after lsp-ui-peek
-   ;;       :map lsp-ui-peek-mode-map
-   ;;       "h" #'lsp-ui-peek--select-prev-file
-   ;;       "j" #'lsp-ui-peek--select-next
-   ;;       "k" #'lsp-ui-peek--select-prev
-   ;;       "l" #'lsp-ui-peek--select-next-file
-   ;;       )
-
-  ;; Slightly modified hydra version of original evil version from:
-  ;; https://github.com/MaskRay/Config/blob/master/home/.config/doom/config.el
-  (defhydra +mr/lsp-traverse-hydra (:hint nil)
-  "Traverse references"
-  ("d" lsp-ui-peek-find-definitions "next" :bind nil)
-  ("n" (-let [(i . n) (lsp-ui-find-next-reference)]
-         (if (> n 0) (message "%d/%d" (+ i 1) n))) "next")
-  ("p" (-let [(i . n) (lsp-ui-find-prev-reference)]
-         (if (> n 0) (message "%d/%d" (+ i 1) n))) "prev")
-  ("R" (-let [(i . n) (lsp-ui-find-prev-reference '(:role 8))]
-         (if (> n 0) (message "read %d/%d" (+ i 1) n))) "prev read" :bind nil)
-  ("r" (-let [(i . n) (lsp-ui-find-next-reference '(:role 8))]
-         (if (> n 0) (message "read %d/%d" (+ i 1) n))) "next read" :bind nil)
-  ("W" (-let [(i . n) (lsp-ui-find-prev-reference '(:role 16))]
-         (if (> n 0) (message "write %d/%d" (+ i 1) n))) "prev write" :bind nil)
-  ("w" (-let [(i . n) (lsp-ui-find-next-reference '(:role 16))]
-         (if (> n 0) (message "write %d/%d" (+ i 1) n))) "next write" :bind nil)
-  ("q" nil "stop")
-  )
-)
-
-;; LSP-Mode
-(use-package! lsp-mode
-  :commands lsp
-  :config
-  (setq lsp-auto-guess-root t lsp-eldoc-prefer-signature-help nil)
-  (setq lsp-enable-links nil)
-  (setq lsp-prefer-flymake nil)
-  (setq lsp-enable-file-watchers nil)
-  (setq lsp-keep-workspace-alive nil)
-  (add-to-list 'lsp-file-watch-ignored "build")
-  ;; (setq lsp-project-blacklist '("/CC/"))
-  )
-
-;; LSP-Company
-(use-package! company-lsp
-  ;:load-path "~/Dev/Emacs/company-lsp"
-  :after lsp-mode
-  :config
-  (setq company-transformers nil company-lsp-cache-candidates nil)
-  (set-company-backend! 'lsp-mode 'company-lsp)
-  )
-
-;(set-company-backend! '(c-mode c++-mode)
-;  '(company-lsp company-files company-yasnippet))
-
-
+(after! lsp-mode
+  (setq read-process-output-max (* 1024 1024))
+  (setq lsp-completion-provider :capf)
+  (setq lsp-idle-delay 0.500)
+  (setq lsp-headerline-breadcrumb-enable t)
+  (setq lsp-semantic-tokens-enable t)
+  (setq lsp-log-io nil))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CCLS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; https://github.com/MaskRay/ccls/wiki/lsp-mode
-
-
-;;;###autoload
-(defvar +ccls-path-mappings [])
-
-;;;###autoload
-(defvar +ccls-initial-blacklist [])
-
-;;;###autoload
-(defvar +lsp-blacklist nil)
-
-;;;###autoload
-(defvar +my-use-eglot nil)
-
-;;;###autoload
-(defun +ccls|enable ()
-  (when (and buffer-file-name (--all? (not (string-match-p it buffer-file-name)) +lsp-blacklist))
-    (require 'ccls)
-    (setq-local lsp-ui-sideline-show-symbol nil)
-    (when (string-match-p "/llvm" buffer-file-name)
-      (setq-local lsp-enable-file-watchers nil))
-    (if +my-use-eglot (call-interactively #'eglot) (lsp))))
-
-(defun +my|toggle-eglot ()
-  (interactive)
-  (setq +my-use-eglot (not +my-use-eglot))
-  (message "use: %s" (if +my-use-eglot "eglot" "lsp-mode")))
-
-(defun ccls/callee ()
-  (interactive)
-  (lsp-ui-peek-find-custom "$ccls/call" '(:callee t)))
-(defun ccls/caller ()
-  (interactive)
-  (lsp-ui-peek-find-custom "$ccls/call"))
-(defun ccls/vars (kind)
-  (lsp-ui-peek-find-custom "$ccls/vars" `(:kind ,kind)))
-(defun ccls/base (levels)
-  (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels)))
-(defun ccls/derived (levels)
-  (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels :derived t)))
-(defun ccls/member (kind)
-  (lsp-ui-peek-find-custom "$ccls/member" `(:kind ,kind)))
-
-;; The meaning of :role corresponds to https://github.com/maskray/ccls/blob/master/src/symbol.h
-
-;; References w/ Role::Address bit (e.g. variables explicitly being taken addresses)
-(defun ccls/references-address ()
-  (interactive)
-  (lsp-ui-peek-find-custom "textDocument/references"
-   (plist-put (lsp--text-document-position-params) :role 128)))
-
-;; References w/ Role::Dynamic bit (macro expansions)
-(defun ccls/references-macro ()
-  (interactive)
-  (lsp-ui-peek-find-custom "textDocument/references"
-   (plist-put (lsp--text-document-position-params) :role 64)))
-
-;; References w/o Role::Call bit (e.g. where functions are taken addresses)
-(defun ccls/references-not-call ()
-  (interactive)
-  (lsp-ui-peek-find-custom "textDocument/references"
-   (plist-put (lsp--text-document-position-params) :excludeRole 32)))
-
-;; References w/ Role::Read
-(defun ccls/references-read ()
-  (interactive)
-  (lsp-ui-peek-find-custom "textDocument/references"
-   (plist-put (lsp--text-document-position-params) :role 8)))
-
-;; References w/ Role::Write
-(defun ccls/references-write ()
-  (interactive)
-  (lsp-ui-peek-find-custom "textDocument/references"
-   (plist-put (lsp--text-document-position-params) :role 16)))
-
-
-;; References whose filenames are under this project
-;(lsp-ui-peek-find-references nil (list :folders (vector (projectile-project-root))))
-
-(use-package! ccls
-  ;:load-path "~/Dev/Emacs/emacs-ccls"
-  :hook ((c-mode-local-vars c++-mode-local-vars objc-mode-local-vars) . +ccls|enable)
-  :config
-  ;; overlay is slow
-  ;; Use https://github.com/emacs-mirror/emacs/commits/feature/noverlay
-  (setq ccls-sem-highlight-method 'font-lock)
-  (ccls-use-default-rainbow-sem-highlight)
-  ;; https://github.com/maskray/ccls/blob/master/src/config.h
-  (setq
-   ccls-initialization-options
-   `(:clang
-     (:excludeArgs
-      ;; Linux's gcc options. See ccls/wiki
-      ["-falign-jumps=1" "-falign-loops=1" "-fconserve-stack" "-fmerge-constants" "-fno-code-hoisting" "-fno-schedule-insns" "-fno-var-tracking-assignments" "-fsched-pressure"
-       "-mhard-float" "-mindirect-branch-register" "-mindirect-branch=thunk-inline" "-mpreferred-stack-boundary=2" "-mpreferred-stack-boundary=3" "-mpreferred-stack-boundary=4" "-mrecord-mcount" "-mindirect-branch=thunk-extern" "-mno-fp-ret-in-387" "-mskip-rax-setup"
-       "--param=allow-store-data-races=0" "-Wa arch/x86/kernel/macros.s" "-Wa -"]
-      :extraArgs []
-      :pathMappings ,+ccls-path-mappings)
-     :completion
-     (:include
-      (:blacklist
-       ["^/usr/(local/)?include/c\\+\\+/[0-9\\.]+/(bits|tr1|tr2|profile|ext|debug)/"
-        "^/usr/(local/)?include/c\\+\\+/v1/"
-        ]))
-     :index (:initialBlacklist ,+ccls-initial-blacklist :parametersInDeclarations :json-false :trackDependency 1)))
-
-  (after! projectile
-   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
-  )
-
+(setq ccls-sem-highlight-method 'font-lock)
+;; (after! ccls
+;;   (setq ccls-sem-highlight-method 'font-lock))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; COMPANY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (use-package! company-lsp
-;;   :hook (company-mode . company-box-mode)
-;;   ;:load-path "~/Dev/Emacs/company-lsp"
-;;   :after lsp-mode
-;;   :config
-;;   (setq company-transformers nil company-lsp-cache-candidates nil)
-;;   (set-company-backend! 'lsp-mode 'company-lsp)
-;;  )
-
-(use-package company-prescient
-    :after company
-    :hook (company-mode . company-prescient-mode))
 
 ;; (after! company
-;;     (setq company-tooltip-limit 5
-;;           company-tooltip-minimum-width 80
-;;           company-tooltip-minimum 5
-;;           company-transformers nil
-;;           company-lsp-cache-candidates 1
-;;           company-backends
-;;           '(company-capf company-dabbrev company-files company-yasnippet)
-;;           company-global-modes '(not comint-mode lsp-mode erc-mode message-mode help-mode gud-mode)))
+;;   (setq company-box-doc-enable nil))
+;; ;; (use-package! company-prescient
+;; ;;   :init (company-prescient-mode 1))
 
-(use-package! company
-  :bind (:map company-active-map
-         ("TAB" . company-complete-common-or-cycle)
-         ("<tab>" . company-complete-common-or-cycle)
-  ;       ("<S-Tab>" . company-select-previous)
-  ;       ("<backtab>" . company-select-previous)
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous))
-  :hook (after-init . global-company-mode)
-  :custom
-  (company-tooltip-limit 5)
-  (company-tooltip-minimum 5)
-  (company-transformers nil)
-  (company-lsp-cache-candidates 1)
-  (company-require-match 'never)
-  (company-minimum-prefix-length 2)
-  (company-tooltip-align-annotations t)
-  (company-frontends '(company-pseudo-tooltip-unless-just-one-frontend
-                       company-preview-frontend
-                       company-echo-metadata-frontend))
-  (company-backends '(company-capf company-files))
-  (company-tooltip-minimum-width 80)
-  (company-tooltip-maximum-width 60))
-
-;; (use-package! company-posframe
-;;   :after company
-;;   :custom
-;;   (company-posframe-quickhelp-show-header nil)
-;;   (company-posframe-show-indicator nil)
-;;   (company-posframe-show-metadata nil)
-;;   (company-posframe-quickhelp-show-params
-;;    (list :poshandler #'company-posframe-quickhelp-right-poshandler
-;;          :internal-border-width 1
-;;          :timeout 60
-;;          :internal-border-color (face-attribute 'mode-line :background)
-;;          :no-properties nil))
-;;   (company-posframe-show-params
-;;    (list :poshandler #'company-posframe-quickhelp-right-poshandler
-;;          :internal-border-width 1
-;;          :timeout 60
-;;          :internal-border-color (face-attribute 'mode-line :background)
-;;          :no-properties nil))
-;;   :config
-;;   (company-posframe-mode))
+;; (use-package! company-quickhelp
+;;   :defines company-quickhelp-delay
+;;   :bind (:map company-active-map
+;;          ([remap company-show-doc-buffer] . company-quickhelp-manual-begin))
+;;   :hook (global-company-mode . company-quickhelp-mode)
+;;   :init (setq company-quickhelp-delay 0.5))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Code formatting

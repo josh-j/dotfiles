@@ -50,7 +50,7 @@
 ;(unpin! t)
 
 
-(disable-packages! company-irony company-irony-c-headers flycheck-irony irony irony-eldoc ivy-rtags rtags)
+(disable-packages! cmake-mode company-irony company-irony-c-headers flycheck-irony irony irony-eldoc ivy-rtags rtags)
 
 ;; LSP/CCLS
 ;(package! eglot)
@@ -70,7 +70,7 @@
 ;(package! lsp-mode)
 ;(package! lsp-treemacs)
 ;(package! lsp-ui)
-;(package! company-lsp)
+(package! company-lsp)
 ;(package! company)
 ;(package! company-posframe)
 ;(package! yasnippet)
@@ -80,7 +80,8 @@
 ;(package! company-box)
 ;(package! prescient)
 ;(package! company-prescient)
-;(package! spinner)                      ; required by lsp-mode
+(package! spinner)                      ; required by lsp-mode
+(package! rg)
 ;; (package! rust-mode)
 ;; (package! lsp-rust :ignore t)
 ;(package! phi-search)
@@ -88,7 +89,8 @@
 ;(package! multiple-cursors)
 ;; Writing & blogging
 ;(package! ox-hugo)
-
+(package! modern-cpp-font-lock)
 ;; Misc
 ;(package! ag)
-(package! clang-format)
+;(package! clang-format)
+(disable-packages! company-prescient)

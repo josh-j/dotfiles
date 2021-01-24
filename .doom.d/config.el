@@ -18,7 +18,7 @@
 ;(set-scroll-bar-mode nil)
 
 ;; Maximize first frame
-;(set-frame-parameter nil 'fullscreen 'maximized)
+(set-frame-parameter nil 'fullscreen 'maximized)
 
 ;; File names relative to project (not root)
 (setq +doom-modeline-buffer-file-name-style 'relative-from-project)
@@ -42,6 +42,35 @@
 ;; Do not automatically copy selected text.
 ;(setq select-enable-primary nil)
 
+
+
+(when IS-MAC
+;;  (setq mac-command-modifier 'meta)
+;;  (setq mac-option-modifier 'none)
+  (setq mac-function-modifier 'control
+        mac-control-modifier 'control ;;'AlT
+        mac-command-modifier 'meta;;'control
+        mac-option-modifier 'alt;;'alt
+        mac-right-command-modifier 'meta
+        mac-right-control-modifier 'control
+        mac-right-option-modifier 'alt)
+  ;; Make mouse wheel / trackpad scrolling less jerky
+  (setq mouse-wheel-scroll-amount '(1
+                                    ((shift) . 5)
+                                    ((control))))
+  (dolist (multiple '("" "double-" "triple-"))
+    (dolist (direction '("right" "left"))
+      (global-set-key (read-kbd-macro (concat "<" multiple "wheel-" direction ">")) 'ignore)))
+  (global-set-key (kbd "M-`") 'ns-next-frame)
+  (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
+  (global-set-key (kbd "M-˙") 'ns-do-hide-others)
+  (with-eval-after-load 'nxml-mode
+    (define-key nxml-mode-map (kbd "M-h") nil))
+  (global-set-key (kbd "M-ˍ") 'ns-do-hide-others) ;; what describe-key reports for cmd-option-h
+  )
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Overall theme & visual behaviour
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -60,7 +89,7 @@
 
 ;; Font setup
 (setq doom-font (font-spec :family "Fira Code Medium" :size 14)
-      ;doom-unicode-font (font-spec :family "hack" :size 12)
+      doom-unicode-font (font-spec :family "hack" :size 12)
       doom-big-font (font-spec :family "Fira Code Medium" :size 16)
       doom-variable-pitch-font (font-spec :family "hack" :size 12))
 
@@ -76,7 +105,7 @@
 
 
 ;; All themes are safe to load
-;(setq custom-safe-themes t)
+(setq custom-safe-themes t)
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -109,9 +138,65 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-;(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type 'relative)
+
+;;----------------------------------------------------------------------------
+;; Stop C-z from minimizing windows under OS X
+;;----------------------------------------------------------------------------
+;; (defun sanityinc/maybe-suspend-frame ()
+;;   (interactive)
+;;   (unless (and IS-MAC window-system)
+;;     (suspend-frame)))
+
+;; (global-set-key (kbd "C-z") 'sanityinc/maybe-suspend-frame)
 
 
+;;----------------------------------------------------------------------------
+;; Suppress GUI features
+;;----------------------------------------------------------------------------
+(setq use-file-dialog nil)
+(setq use-dialog-box nil)
+(setq inhibit-startup-screen t)
+
+
+;;----------------------------------------------------------------------------
+;; Window size and features
+;;----------------------------------------------------------------------------
+;; (setq-default
+;;  window-resize-pixelwise t
+;;  frame-resize-pixelwise t)
+
+;; (when (fboundp 'tool-bar-mode)
+;;   (tool-bar-mode -1))
+;; (when (fboundp 'set-scroll-bar-mode)
+;;   (set-scroll-bar-mode nil))
+
+;; ;(menu-bar-mode -1)
+
+;; (let ((no-border '(internal-border-width . 0)))
+;;   (add-to-list 'default-frame-alist no-border)
+;;   (add-to-list 'initial-frame-alist no-border))
+
+;; (defun sanityinc/adjust-opacity (frame incr)
+;;   "Adjust the background opacity of FRAME by increment INCR."
+;;   (unless (display-graphic-p frame)
+;;     (error "Cannot adjust opacity of this frame"))
+;;   (let* ((oldalpha (or (frame-parameter frame 'alpha) 100))
+;;          ;; The 'alpha frame param became a pair at some point in
+;;          ;; emacs 24.x, e.g. (100 100)
+;;          (oldalpha (if (listp oldalpha) (car oldalpha) oldalpha))
+;;          (newalpha (+ incr oldalpha)))
+;;     (when (and (<= frame-alpha-lower-limit newalpha) (>= 100 newalpha))
+;;       (modify-frame-parameters frame (list (cons 'alpha newalpha))))))
+
+;; ;; TODO: use seethru package instead?
+;; (global-set-key (kbd "M-C-8") (lambda () (interactive) (sanityinc/adjust-opacity nil -2)))
+;; (global-set-key (kbd "M-C-9") (lambda () (interactive) (sanityinc/adjust-opacity nil 2)))
+;; (global-set-key (kbd "M-C-7") (lambda () (interactive) (modify-frame-parameters nil `((alpha . 100)))))
+
+
+;; (when IS-MAC
+;;     (ns-auto-titlebar-mode))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; Speed up startup
@@ -181,37 +266,37 @@
 ;; ;; (setq projectile-enable-caching nil)
 ;; ;; (setq projectile-project-compilation-cmd "./run.py")
 (setq projectile-project-search-path '("~/Projects/"))
-(after! projectile
-  (setq compilation-read-command nil)  ; no prompt in projectile-compile-project
-  ;; . -> Build
-  (projectile-register-project-type 'cmake '("CMakeLists.txt")
-                                    :configure "cmake %s"
-                                    :compile "cmake --build Debug"
-                                    :test "ctest")
-  (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
-  )
+;; (after! projectile
+;;   (setq compilation-read-command nil)  ; no prompt in projectile-compile-project
+;;   ;; . -> Build
+;; ;  (projectile-register-project-type 'cmake '("CMakeLists.txt")
+;; ;                                    :configure "bear cmake %s"
+;; ;                                    :compile "bear cmake --build build"
+;; ;                                    :test "ctest")
+;;   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
+;;   )
 
-(after! counsel-projectile
-  (ivy-add-actions
-   'counsel-projectile-switch-project
-   `(("b" counsel-projectile-switch-project-action-switch-to-buffer
-      "jump to a project buffer")
-     ("s" counsel-projectile-switch-project-action-save-all-buffers
-      "save all project buffers")
-     ("k" counsel-projectile-switch-project-action-kill-buffers
-      "kill all project buffers")
-     ("c" counsel-projectile-switch-project-action-compile
-      "run project compilation command")
-     ("e" counsel-projectile-switch-project-action-edit-dir-locals
-      "edit project dir-locals")
-     ("v" counsel-projectile-switch-project-action-vc
-      "open project in vc-dir / magit / monky")
-     ("xe" counsel-projectile-switch-project-action-run-eshell
-      "invoke eshell from project root")
-     ("xt" counsel-projectile-switch-project-action-run-term
-      "invoke term from project root")
-     ("_" counsel-projectile-switch-project-action-org-capture
-      "org-capture into project"))))
+;; (after! counsel-projectile
+;;   (ivy-add-actions
+;;    'counsel-projectile-switch-project
+;;    `(("b" counsel-projectile-switch-project-action-switch-to-buffer
+;;       "jump to a project buffer")
+;;      ("s" counsel-projectile-switch-project-action-save-all-buffers
+;;       "save all project buffers")
+;;      ("k" counsel-projectile-switch-project-action-kill-buffers
+;;       "kill all project buffers")
+;;      ("c" counsel-projectile-switch-project-action-compile
+;;       "run project compilation command")
+;;      ("e" counsel-projectile-switch-project-action-edit-dir-locals
+;;       "edit project dir-locals")
+;;      ("v" counsel-projectile-switch-project-action-vc
+;;       "open project in vc-dir / magit / monky")
+;;      ("xe" counsel-projectile-switch-project-action-run-eshell
+;;       "invoke eshell from project root")
+;;      ("xt" counsel-projectile-switch-project-action-run-term
+;;       "invoke term from project root")
+;;      ("_" counsel-projectile-switch-project-action-org-capture
+;;       "org-capture into project"))))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -258,12 +343,12 @@
 ;; ;; LSP
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (setq lsp-clients-clangd-args '("-j=4"
-;;                                 "--background-index"
-;;                                 "--clang-tidy"
-;;                                 "--pch-storage=memory"
-;;                                 "--completion-style=bundled"
-;;                                 "--header-insertion=never"))
+;; (setq lsp-clients-langd-args '("-j=3"
+;;                                "--background-index"
+;;                                "--clang-tidy"
+;;                                "--pch-storage=memory"
+;;                                "--completion-style=bundled"
+;;                                "--header-insertion=never"))
 ;; (after! lsp-clangd (set-lsp-priority! 'clangd 2))
 
 (after! ccls
@@ -279,19 +364,19 @@
   (setq lsp-prefer-flymake nil)
   (setq lsp-enable-file-watchers nil)
   (setq lsp-keep-workspace-alive nil)
-  (setq read-process-output-max (* 1024 1024))
-  (setq lsp-completion-provider :capf)
-  (setq lsp-idle-delay 0.500)
+;;  (setq read-process-output-max (* 1024 1024))
+ ;; (setq lsp-completion-provider :capf)
+ ; (setq lsp-idle-delay 0.500)
   (setq lsp-headerline-breadcrumb-enable t)
   (setq lsp-semantic-tokens-enable t)
-  (setq lsp-log-io nil)
-  (add-hook 'evil-insert-state-entry-hook (lambda () (setq-local lsp-hover-enabled nil)))
-  (add-hook 'evil-insert-state-exit-hook (lambda () (setq-local lsp-hover-enabled t)))
+;;  (setq lsp-log-io nil)
+  ;; (add-hook 'evil-insert-state-entry-hook (lambda () (setq-local lsp-hover-enabled nil)))
+  ;; (add-hook 'evil-insert-state-exit-hook (lambda () (setq-local lsp-hover-enabled t)))
   )
 
-(after! lsp-clients
-  ;; (remhash 'clangd lsp-clients)
-  )
+;; (after! lsp-clients
+;;   ;; (remhash 'clangd lsp-clients)
+;;   )
 
 ;(use-package! lsp-treemacs)
 
@@ -349,11 +434,11 @@
   ;; Override ivy/autoload/hydras.el
   (define-key hydra-ivy/keymap "q" #'hydra-ivy/nil)
   )
-(defun +advice/xref-set-jump (&rest args)
-  (require 'lsp-ui)
-  (lsp-ui-peek--with-evil-jumps (evil-set-jump)))
-(advice-add '+lookup/definition :before #'+advice/xref-set-jump)
-(advice-add '+lookup/references :before #'+advice/xref-set-jump)
+;; (defun +advice/xref-set-jump (&rest args)
+;;   (require 'lsp-ui)
+;;   (lsp-ui-peek--with-evil-jumps (evil-set-jump)))
+;; (advice-add '+lookup/definition :before #'+advice/xref-set-jump)
+;; (advice-add '+lookup/references :before #'+advice/xref-set-jump)
 
 (defvar +my/xref-blacklist nil
   "List of paths that should not enable xref-find-* or dumb-jump-go")
@@ -378,9 +463,9 @@
 ;; ;; CCLS
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; https://github.com/MaskRay/ccls/wiki/lsp-mode
-;; (setq ccls-sem-highlight-method 'font-lock)
-;; ;; (after! ccls
-;; ;;   (setq ccls-sem-highlight-method 'font-lock))
+(setq ccls-sem-highlight-method 'font-lock)
+(after! ccls
+  (setq ccls-sem-highlight-method 'font-lock))
 (after! cc-mode
   ;; https://github.com/radare/radare2
   (c-add-style
@@ -433,9 +518,9 @@
      ))
   )
 
-(use-package! clang-format
-  :commands (clang-format-region)
-  )
+;; (use-package! clang-format
+;;   :commands (clang-format-region)
+;;   )
 
 (use-package! modern-cpp-font-lock
   :hook (c++-mode . modern-c++-font-lock-mode))
@@ -455,19 +540,19 @@
 ;;          ([remap company-show-doc-buffer] . company-quickhelp-manual-begin))
 ;;   :hook (global-company-mode . company-quickhelp-mode)
 ;;   :init (setq company-quickhelp-delay 0.5))
-(after! company
-  (setq company-minimum-prefix-length 2
-        company-quickhelp-delay nil
-        company-show-numbers t
-        company-global-modes '(not comint-mode erc-mode message-mode help-mode gud-mode)
-        ))
+;; (after! company
+;;   (setq company-minimum-prefix-length 2
+;;         company-quickhelp-delay nil
+;; ;;        company-show-numbers t
+;;         company-global-modes '(not comint-mode erc-mode message-mode help-mode gud-mode)
+;;         ))
 
-(use-package! company-lsp
-  :after lsp-mode
-  :config
-  (setq company-transformers nil company-lsp-cache-candidates nil)
-  (set-company-backend! 'lsp-mode 'company-capf)
-  )
+;; (use-package! company-lsp
+;;   :after lsp-mode
+;;   :config
+;;   ;(setq company-transformers nil company-lsp-cache-candidates nil)
+;;   ;(set-company-backend! 'lsp-mode 'company-capf)
+;;  )
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; Code formatting
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

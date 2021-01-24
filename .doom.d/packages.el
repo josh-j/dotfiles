@@ -50,7 +50,7 @@
 ;(unpin! t)
 
 
-(disable-packages! cmake-mode company-irony company-irony-c-headers flycheck-irony irony irony-eldoc ivy-rtags rtags)
+(disable-packages! company-irony company-irony-c-headers flycheck-irony irony irony-eldoc ivy-rtags rtags)
 
 ;; LSP/CCLS
 ;(package! eglot)
@@ -93,4 +93,7 @@
 ;; Misc
 ;(package! ag)
 ;(package! clang-format)
-(disable-packages! company-prescient)
+;;(when IS-MAC
+;;  (package! ns-auto-titlebar)
+;;)
+;;(disable-packages! company-prescient)

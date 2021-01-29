@@ -1,0 +1,70 @@
+!! Dark
+(cd-black-bg      "#48483e")      ; color 0
+(cd-black      "#76715e")         ; color 8
+;; ----------------------
+(cd-red-bg        "#b44459")      ; color 1
+(cd-red        "#fb5574")         ; color 9
+;; ----------------------
+(cd-green-bg        "#92b34e")    ; color 2
+(cd-green        "#cffb6c")       ; color 10
+;; ----------------------
+(cd-yellow-bg        "#b28914")   ; color 3
+(cd-yellow        "#e7d757")      ; color 11
+;; ----------------------
+(cd-blue-bg       "#4e608e")      ; color 4
+(cd-blue        "#7b97e2")        ; color 12
+;; ----------------------
+(cd-magenta-bg        "#905e78")  ; color 5
+(cd-magenta        "#fbbadc")     ; color 13
+;; ----------------------
+(cd-cyan-bg        "#4f7579")     ; color 6
+(cd-cyan        "#a6f5fc")        ; color 14
+;; ----------------------
+(cd-white-bg      "#5d5a4d")      ; color 7
+(cd-white      "#fcfbd2")         ; color 15
+;; ----------------------
+(cd-orange-bg        "#cc8914")   ; color 3
+(cd-orange        "#fad757")      ; color 11
+;; ----------------------
+(cd-fg         "#fcfcdd")
+(cd-bg         "#0c120d")
+(cd-cursor         "#fcfcdd")
+
+
+!! Light
+! special
+*.foreground:   #0f260f
+*.background:   #ecece8
+*.cursorColor:  #0f260f
+
+! black
+*.color0:       #0f260f
+*.color8:       #354335
+
+! red
+*.color1:       #cd7f67
+*.color9:       #b12900
+
+! green
+*.color2:       #66cb74
+*.color10:      #119423
+
+! yellow
+*.color3:       #cdc566
+*.color11:      #807709
+
+! blue
+*.color4:       #6775cc
+*.color12:      #0c1e8a
+
+! magenta
+*.color5:       #cc659d
+*.color13:      #970855
+
+! cyan
+*.color6:       #85cbbd
+*.color14:      #147d68
+
+! white
+*.color7:       #b9b9aa
+*.color15:      #ecece8

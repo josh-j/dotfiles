@@ -1,572 +1,514 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Basic behaviour and appearance
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Show trailing spaces
-;(setq-default show-trailing-whitespace t)
-
-;; Disable trailing whitespaces in the minibuffer
-;(add-hook! '(minibuffer-setup-hook doom-popup-mode-hook)
-;  (setq-local show-trailing-whitespace nil))
-
-;; Set tabs to indent as white spaces and set def. tab width to 4 white spaces
-;(setq-default indent-tabs-mode nil)
-;(setq-default tab-width 2)
-
-;; Minimalistic Emacs at startup
-;(menu-bar-mode 0)
-;(tool-bar-mode 0)
-;(set-scroll-bar-mode nil)
-
-;; Maximize first frame
-(set-frame-parameter nil 'fullscreen 'maximized)
-
-;; File names relative to project (not root)
-(setq +doom-modeline-buffer-file-name-style 'relative-from-project)
-
-;; Don't ask when killing emacs
-;(setq confirm-kill-emacs nil)
-
-;; Resize windows interactively.
-;(def-package! resize-window
-;  :commands (resize-window))
-
-;; Reuse dired buffers
-;(put 'dired-find-alternate-file 'disabled nil)
-
-;; Smooth mouse scrolling
-;(setq mouse-wheel-scroll-amount '(2 ((shift) . 1))  ; scroll two lines at a time
-;      mouse-wheel-progressive-speed nil             ; don't accelerate scrolling
-;      mouse-wheel-follow-mouse t                    ; scroll window under mouse
-;      scroll-step 1)
-
-;; Do not automatically copy selected text.
-;(setq select-enable-primary nil)
-
-
-
-(when IS-MAC
-;;  (setq mac-command-modifier 'meta)
-;;  (setq mac-option-modifier 'none)
-  (setq mac-function-modifier 'control
-        mac-control-modifier 'control ;;'AlT
-        mac-command-modifier 'meta;;'control
-        mac-option-modifier 'alt;;'alt
-        mac-right-command-modifier 'meta
-        mac-right-control-modifier 'control
-        mac-right-option-modifier 'alt)
-  ;; Make mouse wheel / trackpad scrolling less jerky
-  (setq mouse-wheel-scroll-amount '(1
-                                    ((shift) . 5)
-                                    ((control))))
-  (dolist (multiple '("" "double-" "triple-"))
-    (dolist (direction '("right" "left"))
-      (global-set-key (read-kbd-macro (concat "<" multiple "wheel-" direction ">")) 'ignore)))
-  (global-set-key (kbd "M-`") 'ns-next-frame)
-  (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
-  (global-set-key (kbd "M-˙") 'ns-do-hide-others)
-  (with-eval-after-load 'nxml-mode
-    (define-key nxml-mode-map (kbd "M-h") nil))
-  (global-set-key (kbd "M-ˍ") 'ns-do-hide-others) ;; what describe-key reports for cmd-option-h
-  )
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Overall theme & visual behaviour
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
-
-;; Font setup
-(setq doom-font (font-spec :family "Fira Code Medium" :size 14)
-      doom-unicode-font (font-spec :family "hack" :size 12)
-      doom-big-font (font-spec :family "Fira Code Medium" :size 16)
-      doom-variable-pitch-font (font-spec :family "hack" :size 12))
-
-;(setq doom-modeline-height 1)
-;(set-face-attribute 'mode-line nil :family "Noto Sans" :height 100)
-;(set-face-attribute 'mode-line-inactive nil :family "Noto Sans" :height 100)
-
-;; (setq doom-font (font-spec :family "Meslo LG M DZ for Powerline" :size 20)
-;;       doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline")
-;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono")
-;;       doom-big-font (font-spec :family "Meslo LG M DZ for Powerline" :size 24))
-
-
-
-;; All themes are safe to load
-(setq custom-safe-themes t)
-
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
-;(setq doom-theme 'doom-one)
-;;(setq doom-theme 'doom-vibrant)
-;;(setq doom-theme 'doom-nord)
-;;(setq doom-theme 'doom-nova)
-;;(setq doom-theme 'doom-dracula)
-;;(setq doom-theme 'doom-solarized-light)
-;;(setq doom-theme 'doom-sourcerer)
-
-(use-package! treemacs-all-the-icons
-  :after treemacs)
-
-(setq doom-theme 'doom-laserwave
-      doom-themes-enable-bold t    ; if nil, bold is universally disabled
-      doom-themes-enable-italic t
-      doom-themes-treemacs-theme "all-the-icons"
-      doom-themes-treemacs-enable-variable-pitch t) ; if nil, italics is universally disabled
-
-;; (after! treemacs
-;;   (treemacs-load-theme "doom-color"))
-
-;; User brighter comments for doom one, particularly
-;; useful for reveal js presentations that inherits
-;; code highlighting from one's emacs theme.
-;(setq doom-one-brighter-comments t)
-;(setq doom-one-comment-bg nil)
-
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'relative)
-
-;;----------------------------------------------------------------------------
-;; Stop C-z from minimizing windows under OS X
-;;----------------------------------------------------------------------------
-;; (defun sanityinc/maybe-suspend-frame ()
-;;   (interactive)
-;;   (unless (and IS-MAC window-system)
-;;     (suspend-frame)))
-
-;; (global-set-key (kbd "C-z") 'sanityinc/maybe-suspend-frame)
-
-
-;;----------------------------------------------------------------------------
-;; Suppress GUI features
-;;----------------------------------------------------------------------------
-(setq use-file-dialog nil)
-(setq use-dialog-box nil)
-(setq inhibit-startup-screen t)
-
-
-;;----------------------------------------------------------------------------
-;; Window size and features
-;;----------------------------------------------------------------------------
-;; (setq-default
-;;  window-resize-pixelwise t
-;;  frame-resize-pixelwise t)
-
-;; (when (fboundp 'tool-bar-mode)
-;;   (tool-bar-mode -1))
-;; (when (fboundp 'set-scroll-bar-mode)
-;;   (set-scroll-bar-mode nil))
-
-;; ;(menu-bar-mode -1)
-
-;; (let ((no-border '(internal-border-width . 0)))
-;;   (add-to-list 'default-frame-alist no-border)
-;;   (add-to-list 'initial-frame-alist no-border))
-
-;; (defun sanityinc/adjust-opacity (frame incr)
-;;   "Adjust the background opacity of FRAME by increment INCR."
-;;   (unless (display-graphic-p frame)
-;;     (error "Cannot adjust opacity of this frame"))
-;;   (let* ((oldalpha (or (frame-parameter frame 'alpha) 100))
-;;          ;; The 'alpha frame param became a pair at some point in
-;;          ;; emacs 24.x, e.g. (100 100)
-;;          (oldalpha (if (listp oldalpha) (car oldalpha) oldalpha))
-;;          (newalpha (+ incr oldalpha)))
-;;     (when (and (<= frame-alpha-lower-limit newalpha) (>= 100 newalpha))
-;;       (modify-frame-parameters frame (list (cons 'alpha newalpha))))))
-
-;; ;; TODO: use seethru package instead?
-;; (global-set-key (kbd "M-C-8") (lambda () (interactive) (sanityinc/adjust-opacity nil -2)))
-;; (global-set-key (kbd "M-C-9") (lambda () (interactive) (sanityinc/adjust-opacity nil 2)))
-;; (global-set-key (kbd "M-C-7") (lambda () (interactive) (modify-frame-parameters nil `((alpha . 100)))))
-
-
-;; (when IS-MAC
-;;     (ns-auto-titlebar-mode))
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Speed up startup
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;
-;; (defvar centaur-gc-cons-threshold (if (display-graphic-p) 16000000 1600000)
-;;   "The default value to use for `gc-cons-threshold'. If you experience freezing,
-;; decrease this. If you experience stuttering, increase this.")
-
-;; (defvar centaur-gc-cons-upper-limit (if (display-graphic-p) 400000000 100000000)
-;;   "The temporary value for `gc-cons-threshold' to defer it.")
-
-;; (defvar centaur-gc-timer (run-with-idle-timer 10 t #'garbage-collect)
-;;   "Run garbarge collection when idle 10s.")
-
-;; (defvar default-file-name-handler-alist file-name-handler-alist)
-
-;; (setq file-name-handler-alist nil)
-;; (setq gc-cons-threshold centaur-gc-cons-upper-limit
-;;       gc-cons-percentage 0.5)
-;; (add-hook 'emacs-startup-hook
-;;           (lambda ()
-;;             "Restore defalut values after startup."
-;;             (setq file-name-handler-alist default-file-name-handler-alist)
-;;             (setq gc-cons-threshold centaur-gc-cons-threshold
-;;                   gc-cons-percentage 0.1)
-
-;;             ;; GC automatically while unfocusing the frame
-;;             ;; `focus-out-hook' is obsolete since 27.1
-;;             (if (boundp 'after-focus-change-function)
-;;                 (add-function :after after-focus-change-function
-;;                   (lambda ()
-;;                     (unless (frame-focus-state)
-;;                       (garbage-collect))))
-;;               (add-hook 'focus-out-hook 'garbage-collect))
-
-;;             ;; Avoid GCs while using `ivy'/`counsel'/`swiper' and `helm', etc.
-;;             ;; @see http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
-;;             (defun my-minibuffer-setup-hook ()
-;;               (setq gc-cons-threshold centaur-gc-cons-upper-limit))
-
-;;             (defun my-minibuffer-exit-hook ()
-;;               (setq gc-cons-threshold centaur-gc-cons-threshold))
-
-;;             (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
-;;             (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)))
-
-
-
-(use-package! rg)
-(setq which-key-idle-delay 0)
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Cursor movement
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;(after! smartparens
-;; ;  (smartparens-global-mode -1))
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Persp / workspaces
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;(setq-default +workspaces-switch-project-function #'ignore)
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Projectile
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; (setq projectile-enable-caching nil)
-;; ;; (setq projectile-project-compilation-cmd "./run.py")
-(setq projectile-project-search-path '("~/Projects/"))
-;; (after! projectile
-;;   (setq compilation-read-command nil)  ; no prompt in projectile-compile-project
-;;   ;; . -> Build
-;; ;  (projectile-register-project-type 'cmake '("CMakeLists.txt")
-;; ;                                    :configure "bear cmake %s"
-;; ;                                    :compile "bear cmake --build build"
-;; ;                                    :test "ctest")
-;;   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
-;;   )
-
-;; (after! counsel-projectile
-;;   (ivy-add-actions
-;;    'counsel-projectile-switch-project
-;;    `(("b" counsel-projectile-switch-project-action-switch-to-buffer
-;;       "jump to a project buffer")
-;;      ("s" counsel-projectile-switch-project-action-save-all-buffers
-;;       "save all project buffers")
-;;      ("k" counsel-projectile-switch-project-action-kill-buffers
-;;       "kill all project buffers")
-;;      ("c" counsel-projectile-switch-project-action-compile
-;;       "run project compilation command")
-;;      ("e" counsel-projectile-switch-project-action-edit-dir-locals
-;;       "edit project dir-locals")
-;;      ("v" counsel-projectile-switch-project-action-vc
-;;       "open project in vc-dir / magit / monky")
-;;      ("xe" counsel-projectile-switch-project-action-run-eshell
-;;       "invoke eshell from project root")
-;;      ("xt" counsel-projectile-switch-project-action-run-term
-;;       "invoke term from project root")
-;;      ("_" counsel-projectile-switch-project-action-org-capture
-;;       "org-capture into project"))))
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ;; PlantUML
-
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Org-mode and org-capture
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Personal variables?
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Popups
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Yasnippet file templates
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Backups and caching
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Flycheck
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; IEDIT
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; HYDRA
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; LSP
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (setq lsp-clients-langd-args '("-j=3"
-;;                                "--background-index"
-;;                                "--clang-tidy"
-;;                                "--pch-storage=memory"
-;;                                "--completion-style=bundled"
-;;                                "--header-insertion=never"))
-;; (after! lsp-clangd (set-lsp-priority! 'clangd 2))
-
-(after! ccls
-  (setq ccls-initialization-options '(:index (:comments 2) :completion (:detailedLabel t)))
-  (set-lsp-priority! 'ccls 2)) ; optional as ccls is the default in Doom
-
-
-(use-package! lsp-mode
-  :commands lsp
-  :config
-  (setq lsp-auto-guess-root t lsp-eldoc-prefer-signature-help nil)
-  (setq lsp-enable-links nil)
-  (setq lsp-prefer-flymake nil)
-  (setq lsp-enable-file-watchers nil)
-  (setq lsp-keep-workspace-alive nil)
-;;  (setq read-process-output-max (* 1024 1024))
- ;; (setq lsp-completion-provider :capf)
- ; (setq lsp-idle-delay 0.500)
-  (setq lsp-headerline-breadcrumb-enable t)
-  (setq lsp-semantic-tokens-enable t)
-;;  (setq lsp-log-io nil)
-  ;; (add-hook 'evil-insert-state-entry-hook (lambda () (setq-local lsp-hover-enabled nil)))
-  ;; (add-hook 'evil-insert-state-exit-hook (lambda () (setq-local lsp-hover-enabled t)))
-  )
-
-;; (after! lsp-clients
-;;   ;; (remhash 'clangd lsp-clients)
-;;   )
-
-;(use-package! lsp-treemacs)
-
-(use-package! lsp-ui
-  :commands lsp-ui-mode
-  :config
+;;; ~/.doom.d/config.el --- Private Doom Emacs config -*- lexical-binding: t; -*-
+
+
+;;; Set up load path and host specific configuration
+(let ((default-directory (expand-file-name "lisp" doom-private-dir)))
+  (normal-top-level-add-subdirs-to-load-path))
+(setq load-path (append
+                 (mapcar (lambda (folder) (expand-file-name folder doom-private-dir))
+                         '("lisp"))
+                 load-path))
+(load! "local-config")
+
+
+;;; Theme
+(setq doom-theme 'doom-one
+      doom-themes-treemacs-theme 'doom-colors
+      doom-acario-dark-brighter-modeline t
+      doom-acario-light-brighter-modeline t)
+
+(setq current-theme doom-theme ; Use the dark theme first, better to flash dark->light than light->dark
+      gagbo-light-theme 'doom-one
+      gagbo-dark-theme 'doom-one
+      gagbo-light-theme-begin '(00 00 9)
+      gagbo-light-theme-end '(00 00 20))
+
+(run-with-timer 0 900 #'gagbo-circadian-theme)
+
+;;;; HL-TODO faces
+;; (setq hl-todo-keyword-faces
+;;       `(("TODO"  . ,(face-foreground 'warning))
+;;         ("FIXME" . ,(face-foreground 'error))
+;;         ("NOTE"  . ,(face-foreground 'success))))
+
+;;;; Rainbow mode with overlays
+(use-package ov-rainbow-mode
+  :commands ov-rainbow-mode)
+
+;;;; Org and Treemacs
+(doom-themes-treemacs-config)
+(doom-themes-org-config)
+
+
+;;; Misc
+;;;; Window splitting
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+
+;;;; Global substitute
+(setq evil-ex-substitute-global t)
+
+;;;; Remove iedit message
+(setq iedit-toggle-key-default nil)
+
+;;;; Uniquify
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets
+      uniquify-strip-common-suffix t)
+
+;;;; Which key
+(setq which-key-idle-delay 0.3)
+
+;;;; Tabs and final EOL
+(setq-default tab-width 8)
+(setq require-final-newline t)
+
+;;;; Ligatures
+(setq +ligatures-in-modes (when IS-LINUX '(emacs-lisp-mode haskell-mode python-mode)))
+
+;;;; Ophints
+(setq evil-goggles-duration 0.2)
+
+;;;; LSP
+(set-eglot-client! 'cc-mode '("clangd"))
+(setq lsp-headerline-breadcrumb-enable t)
+(after! lsp
   (setq
-   lsp-ui-sideline-enable nil
-   lsp-ui-sideline-ignore-duplicate t
-   lsp-ui-doc-header nil
-   lsp-ui-doc-include-signature nil
-   lsp-ui-doc-background (doom-color 'base4)
-   lsp-ui-doc-border (doom-color 'fg)
+   ;; obsolete, since https://github.com/emacs-lsp/lsp-mode/commit/4796140ef3b3f478725767e777c5af145602fd2e
+   ;; but I add it because of module :lang cc
+   lsp-enable-semantic-highlighting nil
+   lsp-enable-semantic-tokens nil
+   lsp-progress-via-spinner nil
+   lsp-idle-delay 0.5
+   lsp-headerline-breadcrumb-enable nil
+   lsp-print-performance nil
+   lsp-enable-indentation t
+   lsp-enable-on-type-formatting nil
+   lsp-enable-symbol-highlighting nil
+   lsp-log-io nil))
 
-   lsp-ui-peek-force-fontify nil
-   lsp-ui-peek-expand-function (lambda (xs) (mapcar #'car xs)))
+(setq +lsp-company-backends '(company-capf :with company-yasnippet))
 
-  (custom-set-faces
-   '(ccls-sem-global-variable-face ((t (:underline t :weight extra-bold))))
-   '(lsp-face-highlight-read ((t (:background "sea green"))))
-   '(lsp-face-highlight-write ((t (:background "brown4"))))
-   '(lsp-ui-sideline-current-symbol ((t (:foreground "grey38" :box nil))))
-   '(lsp-ui-sideline-symbol ((t (:foreground "grey30" :box nil)))))
+(after! lsp-ui
+  (setq lsp-ui-sideline-enable nil
+        lsp-ui-sideline-show-code-actions t
+        lsp-ui-sideline-show-symbol nil
+        lsp-ui-sideline-show-hover nil
+        lsp-ui-sideline-show-diagnostics nil
+        lsp-ui-doc-enable nil
+        lsp-ui-doc-max-width 50
+        lsp-ui-doc-max-height 5
+        lsp-ui-doc-include-signature t
+        lsp-ui-doc-header t)
 
-  (map! :after lsp-ui-peek
-        :map lsp-ui-peek-mode-map
-        "h" #'lsp-ui-peek--select-prev-file
-        "j" #'lsp-ui-peek--select-next
-        "k" #'lsp-ui-peek--select-prev
-        "l" #'lsp-ui-peek--select-next-file
-        )
+  (add-hook! 'lsp-ui-mode-hook
+    (run-hooks (intern (format "%s-lsp-ui-hook" major-mode)))))
 
-  (defhydra hydra/ref (evil-normal-state-map "K")
-    "reference"
-    ("p" (-let [(i . n) (lsp-ui-find-prev-reference)]
-           (if (> n 0) (message "%d/%d" i n))) "prev")
-    ("n" (-let [(i . n) (lsp-ui-find-next-reference)]
-           (if (> n 0) (message "%d/%d" i n))) "next")
-    ("R" (-let [(i . n) (lsp-ui-find-prev-reference '(:role 8))]
-           (if (> n 0) (message "read %d/%d" i n))) "prev read" :bind nil)
-    ("r" (-let [(i . n) (lsp-ui-find-next-reference '(:role 8))]
-           (if (> n 0) (message "read %d/%d" i n))) "next read" :bind nil)
-    ("W" (-let [(i . n) (lsp-ui-find-prev-reference '(:role 16))]
-           (if (> n 0) (message "write %d/%d" i n))) "prev write" :bind nil)
-    ("w" (-let [(i . n) (lsp-ui-find-next-reference '(:role 16))]
-           (if (> n 0) (message "write %d/%d" i n))) "next write" :bind nil)
-    )
+;;;;; Flycheck
+(after! flycheck
+  (setq flycheck-display-errors-delay 0.1))
+
+
+
+;;; Non-Doom packages
+
+;;;; Rainbow mode
+;; Fontify html hex codes
+(use-package rainbow-mode
+  :diminish
+  :commands rainbow-mode)
+
+;;;; Key Quiz
+(use-package! key-quiz
+  :commands (key-quiz)
+  :init
+  (setq key-quiz-matching-regexp "^<?[MCSgz]"))
+
+;;;; Aggressive Indent
+(use-package! aggressive-indent
+  :commands (aggressive-indent-mode))
+;; Add hooks for messy code like (my) elisp and CSS
+(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+(add-hook 'css-mode-hook #'aggressive-indent-mode)
+
+;;;; Page Break Lines
+(use-package! page-break-lines
+  :init
+  (setq page-break-lines-modes '(emacs-lisp-mode lisp-mode scheme-mode compilation-mode outline-mode help-mode))
+  :commands (global-page-break-lines-mode page-break-lines-mode))
+
+(global-page-break-lines-mode)
+
+;;;; Flymake
+(after! flymake
+  (setq flymake-fringe-indicator-position 'left-fringe
+        flymake-suppress-zero-counters t
+        flymake-start-on-flymake-mode t
+        flymake-no-changes-timeout nil
+        flymake-start-on-save-buffer t
+        flymake-proc-compilation-prevents-syntax-check t
+        flymake-wrap-around nil))
+
+;;;; Fish
+(when (and (executable-find "fish")
+           (require 'fish-completion nil t))
+  (global-fish-completion-mode))
+
+;;;; company
+(after! company
+  (setq company-global-modes '(not erc-mode message-mode help-mode gud-mode org-mode)
+        company-idle-delay 0.0
+        company-minimum-prefix-length 1
+        company-transformers nil
+        company-lsp-async 1
+        company-lsp-cache-candidates nil))
+
+;;;; ivy
+(after! ivy-posframe (setq ivy-posframe-display-functions-alist
+                           '((swiper          . nil)
+                             (complete-symbol . ivy-posframe-display-at-point)
+                             (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
+                             (counsel-rg      . ivy-posframe-display-at-frame-center)
+                             (t               . ivy-posframe-display-at-frame-top-center))
+                           ivy-posframe-border-width 1
+                           ivy-posframe-parameters '((min-width . 90)
+                                                     (min-height . 10)
+                                                     (left-fringe . 8)
+                                                     (right-fringe . 8))))
+
+(after! swiper
+  (setq swiper-goto-start-of-match t))
+
+;;;; Helm
+(after! helm
+  (helm-adaptive-mode 1)
+  (setq helm-display-header-line t
+        helm-find-files-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
+        helm-mode-line-string "\
+\\<helm-map>\
+\\[helm-help]:Help \
+\\[helm-select-action]:Act \
+\\[helm-maybe-exit-minibuffer]/\
+f1/f2/f-n:NthAct \
+\\[helm-toggle-suspend-update]:Tog.suspend"
+        helm-posframe-border-width 4
+        helm-posframe-parameters '((min-width . 90)
+                                   (min-height . 15)
+                                   (border-width . 4)
+                                   (left-fringe . 8)
+                                   (right-fringe . 8))
+        helm-posframe-poshandler #'posframe-poshandler-frame-top-center)
+  ;; (helm-posframe-setup) ; For the posframe goodness
   )
 
-(after! ivy
-  (setq ivy-initial-inputs-alist nil)
-  (push '(+ivy/switch-workspace-buffer) ivy-display-functions-alist)
-  )
-(after! ivy-hydra
-  ;; Override ivy/autoload/hydras.el
-  (define-key hydra-ivy/keymap "q" #'hydra-ivy/nil)
-  )
-;; (defun +advice/xref-set-jump (&rest args)
-;;   (require 'lsp-ui)
-;;   (lsp-ui-peek--with-evil-jumps (evil-set-jump)))
-;; (advice-add '+lookup/definition :before #'+advice/xref-set-jump)
-;; (advice-add '+lookup/references :before #'+advice/xref-set-jump)
+;;;; Info colors
+(use-package! info-colors
+  :hook (Info-selection . info-colors-fontify-mode))
 
-(defvar +my/xref-blacklist nil
-  "List of paths that should not enable xref-find-* or dumb-jump-go")
+;;;; asciidoc
+;; (use-package! adoc-mode
+;;   :mode (("\\.asciidoc\\'" . adoc-mode)
+;;          ("\\.asciidoc.fr\\'" . adoc-mode)
+;;          ("\\.adoc.fr\\'" . adoc-mode)))
 
-;;; Override
-;; This function is transitively called by xref-find-{definitions,references,apropos}
-(after! xref
-  ;; This is required to make `xref-find-references' not give a prompt.
-  ;; `xref-find-references' asks the identifier (which has no text property)
-  ;; and then passes it to `lsp-mode', which requires the text property at
-  ;; point to locate the references.
-  ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=29619
-  (setq xref-prompt-for-identifier '(not xref-find-definitions
-                                         xref-find-definitions-other-window
-                                         xref-find-definitions-other-frame
-                                         xref-find-references))
-  )
+;;;; Jinja2
+;; (use-package! jinja2-mode
+;;   :mode (("\\.j2\\'" . jinja2-mode)
+;;          ("\\.jinja\\'" . jinja2-mode)))
 
-(after! ivy-xref
-  (push '(ivy-xref-show-xrefs . nil) ivy-sort-functions-alist))
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; CCLS
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; https://github.com/MaskRay/ccls/wiki/lsp-mode
-(setq ccls-sem-highlight-method 'font-lock)
-(after! ccls
-  (setq ccls-sem-highlight-method 'font-lock))
-(after! cc-mode
-  ;; https://github.com/radare/radare2
-  (c-add-style
-   "my-cc" '("user"
-             (c-basic-offset . 2)
-             (c-offsets-alist
-              . ((innamespace . 0)
-                 (access-label . -)
-                 (case-label . 0)
-                 (member-init-intro . +)
-                 (topmost-intro . 0)
-                 (arglist-cont-nonempty . +)))))
-  (setq c-default-style "my-cc")
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              ;; TODO work around https://github.com/hlissner/doom-emacs/issues/1006
-              ;; (when (and buffer-file-name (string-match-p "binutils\\|glibc" buffer-file-name))
-              ;;   (setq tab-width 8)
-              ;;   (c-set-style "gnu"))
-              (setq flymake-diagnostic-functions '(lsp--flymake-backend t))
-              (modify-syntax-entry ?_ "w")
-              ))
+;;;; djinni
+;; (use-package! djinni-mode
+;;   :mode (("\\.djinni\\'" . djinni-mode)))
 
-  (add-to-list 'auto-mode-alist '("\\.inc\\'" . +cc-c-c++-objc-mode))
+;;;; elisp
+(use-package! flycheck-package
+  :after flycheck
+  :config
+  (flycheck-package-setup))
 
-  (map!
-   :map (c-mode-map c++-mode-map)
-   :n "C-h" (λ! (ccls-navigate "U"))
-   :n "C-j" (λ! (ccls-navigate "R"))
-   :n "C-k" (λ! (ccls-navigate "L"))
-   :n "C-l" (λ! (ccls-navigate "D"))
-   (:leader
-     :n "=" #'clang-format-region
-     )
-   (:localleader
-     :n "a" #'ccls/references-address
-     :n "f" #'ccls/references-not-call
-     :n "lp" #'ccls-preprocess-file
-     :n "lf" #'ccls-reload
-     :n "m" #'ccls/references-macro
-     :n "r" #'ccls/references-read
-     :n "w" #'ccls/references-write
-     :desc "breakpoint"
-     :n "db" (lambda ()
-               (interactive)
-               (evil-open-above 1)
-               (insert "volatile static int z=0;while(!z)asm(\"pause\");")
-               (evil-normal-state))
-     :n "dd" #'realgud:gdb
-     ))
-  )
+;;;; go
+(use-package! flycheck-golangci-lint
+  :hook (go-mode . flycheck-golangci-lint-setup)
+  :config (setenv "GO111MODULE" "on"))
 
-;; (use-package! clang-format
-;;   :commands (clang-format-region)
-;;   )
+(after! (go flycheck)
+  (gagbo--go-flycheck-setup))
 
-(use-package! modern-cpp-font-lock
-  :hook (c++-mode . modern-c++-font-lock-mode))
+;;;; org
+(load! "org-config")
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; COMPANY
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; python
+(after! lsp
+  (setq lsp-pyls-plugins-pycodestyle-enabled nil ;; Disable to ensure sanity
+        lsp-pyls-plugins-pylint-enabled nil ;; Disable to ensure performance
+        lsp-pyls-plugins-rope-completion-enabled nil ;; Disable to ensure jedi
+        lsp-pyls-configuration-sources ["flake8"]))
 
-;; ;; (after! company
-;; ;;   (setq company-box-doc-enable nil))
-;; ;; ;; (use-package! company-prescient
-;; ;; ;;   :init (company-prescient-mode 1))
+(after! (python flycheck)
+  (gagbo--python-flycheck-setup))
 
-;; (use-package! company-quickhelp
-;;   :defines company-quickhelp-delay
-;;   :bind (:map company-active-map
-;;          ([remap company-show-doc-buffer] . company-quickhelp-manual-begin))
-;;   :hook (global-company-mode . company-quickhelp-mode)
-;;   :init (setq company-quickhelp-delay 0.5))
-;; (after! company
-;;   (setq company-minimum-prefix-length 2
-;;         company-quickhelp-delay nil
-;; ;;        company-show-numbers t
-;;         company-global-modes '(not comint-mode erc-mode message-mode help-mode gud-mode)
-;;         ))
+;;;; javascript (Flow)
+                                        ;(use-package company-flow
+                                        ;  :after company)
+                                        ;(with-eval-after-load 'company
+                                        ;  (add-to-list 'company-backends 'company-flow))
 
-;; (use-package! company-lsp
-;;   :after lsp-mode
-;;   :config
-;;   ;(setq company-transformers nil company-lsp-cache-candidates nil)
-;;   ;(set-company-backend! 'lsp-mode 'company-capf)
-;;  )
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Code formatting
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (after! c++-mode
-;;   (set-formatter! 'c++-mode 'clang-format)
-;;   )
+                                        ;(use-package flycheck-flow
+                                        ;  :after flycheck)
+                                        ;(with-eval-after-load 'flycheck
+                                        ;  (gagbo--flow-flycheck-setup))
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; GDB
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Open debugging window style
-;; ;(setq gdb-many-windows t)
+                                        ;(use-package flow-minor-mode
+                                        ;  :hook (js2-mode . flow-minor-enable-automatically))
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Personalized bindings
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;(load! "+bindings")
+;;;  cc
+;;;
+;; (with-eval-after-load 'company
+;;   (add-to-list 'company-backends 'company-clang))
+;;;; rust
+(after! rustic
+  (set-formatter! 'rustic-mode #'rustic-cargo-fmt))
+
+(setq rustic-lsp-server 'rust-analyzer
+      rustic-format-on-save t
+      lsp-rust-server 'rust-analyzer)
+
+(set-popup-rule!
+  "^\\*rust"
+  :slot -2
+  :size 0.45
+  :side 'right
+  :autosave t
+  :quit 'current
+  :ttl nil
+  :modeline t)
+
+(after! lsp-rust
+  (setq lsp-rust-analyzer-lru-capacity 10
+        lsp-rust-analyzer-server-display-inlay-hints t
+        lsp-rust-analyzer-display-chaining-hints t
+        lsp-rust-analyzer-display-parameter-hints nil
+        lsp-rust-analyzer-cargo-watch-enable t
+        lsp-rust-analyzer-cargo-load-out-dirs-from-check t
+        lsp-rust-analyzer-proc-macro-enable t
+        lsp-rust-analyzer-cargo-watch-command "clippy"))
+
+;;;; imenu-list
+(use-package! imenu-list
+  :commands imenu-list-smart-toggle)
+
+;;;; Treemacs
+(after! treemacs
+  (set-popup-rule! "^ \\*Treemacs"
+    :side 'left
+    :slot 1
+    :size 0.30
+    :quit nil
+    :ttl 0)
+  (set-popup-rule! "^\\*LSP Symbols List\\*$"
+    :side 'left
+    :slot 2
+    :size 0.30
+    :quit nil
+    :ttl 0))
+
+;;;; Debugging
+(use-package! realgud-lldb
+  :defer t
+  :init (add-to-list '+debugger--realgud-alist
+                     '(realgud:lldb :modes (c-mode c++-mode rust-mode)
+                                    :package realgud-lldb)))
+;;;; Pkgbuild
+(use-package! pkgbuild-mode
+  :defer t
+  :init
+  (setq pkgbuild-update-sums-on-save nil)
+  :config
+  (add-hook! 'pkgbuild-mode-hook
+    (setq mode-name "PKGBUILD"
+          mode-line-process nil)))
+
+
+
+;;; Faces
+(custom-set-faces!
+  `(markdown-code-face
+    :background ,(doom-color 'bg-alt))
+  `(markdown-markup-face
+    :foreground ,(doom-color 'blue))
+  '(tree-sitter-hl-face:property :slant oblique))
+
+
+;;; Miscellaneous popup rules
+
+(set-popup-rules!
+  '(("^\\*info\\*"
+     :slot 2 :side left :width 83 :quit nil)
+    ("^\\*\\(?:Wo\\)?Man "
+     :vslot -6 :size 0.45 :select t :quit nil :ttl 0)
+    ("^\\*ielm\\*$"
+     :vslot 2 :size 0.4 :quit nil :ttl nil)
+    ("^\\*Ilist\\*$"
+     :slot 2 :side left :size 0.3 :quit nil :ttl nil)
+    ;; `help-mode', `helpful-mode'
+    ("^\\*[Hh]elp"
+     :slot 2 :vslot -8 :size 0.45 :select t)
+    ("^\\*Checkdoc Status\\*$"
+     :vslot -2 :select ignore :quit t :ttl 0)
+    ("^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"
+     :slot -2 :size 0.45 :side right :autosave t :quit current :ttl nil
+     :modeline t)
+    ("^ \\*undo-tree\\*"
+     :slot 2 :side left :size 20 :select t :quit t)
+    ("^\\*\\(?:doom \\|Pp E\\)"  ; transient buffers (no interaction required)
+     :vslot -3 :size +popup-shrink-to-fit :autosave t :select ignore :quit t :ttl 0)
+    ("^\\*Backtrace" :vslot 99 :size 0.4 :quit nil)
+    ("^\\*\\(?:Proced\\|timer-list\\|Process List\\|Abbrevs\\|Output\\|Occur\\|unsent mail\\)\\*" :ignore t)
+    ("^\\*Flycheck errors\\*$"
+     :vslot -2 :select t :quit t :ttl 0)))
+
+
+;;; Eagerly run first input hook
+(run-with-idle-timer 0.2 nil #'doom-first-input-hook-h)
+
+
+;;; Bindings overrides
+
+(map!
+;;;; Window movement
+ :n "gsi" #'oi-jump
+
+ (:map evil-treemacs-state-map
+  "M-j" #'multi-next-line
+  "M-k" #'multi-previous-line)
+
+;;;; :completion selectrum
+ :n "M-c" #'embark-act
+ (:map minibuffer-local-map
+  "C-SPC" #'embark-act-noexit)
+
+ (:leader
+;;;; :ui workspace rework
+  "bb" #'bufler-switch-buffer
+  "bi" #'bufler
+  (:prefix-map ("j" . "Bookmarks")
+   :desc "Create Bookmark" "c" 'bookmark-map
+   :desc "Restore burly bookmark" "b" 'burly-open-bookmark)
+  (:prefix-map ("TAB" . "Workspaces")
+   :desc "Save the workspaces" "s" 'burly-bookmark-frames
+   :desc "Restore workspaces" "g" 'burly-open-bookmark)
+
+;;;; Quit
+  (:prefix "q"
+   :desc "Restart Emacs"                "r" #'doom/restart
+   :desc "Restart & restore Emacs"      "R" #'doom/restart-and-restore
+   :desc "Save buffers and kill server" "Q" #'save-buffers-kill-emacs)
+;;;; Imenu
+  (:prefix "o"
+   :desc "Imenu list"                   "i" #'gagbo-imenu-toggle-maybe-lsp)
+;;;; Toggles
+  (:prefix "t"
+   :desc "Read-only mode"               "r" #'read-only-mode
+   :desc "Ghost (Transparency)" "G" #'gagbo/toggle-transparency)
+;;;; Magit
+  (:prefix "g"
+   :desc "Magit file dispatch"          "d" #'magit-file-dispatch
+   :desc "Create or checkout branch"    "b" #'magit-branch-or-checkout))
+
+;;;; Hydra
+ (:leader
+  (:when (featurep! :ui hydra)
+   (:prefix "w"
+    :desc "Interactive menu"    "w" #'+hydra/window-nav/body)
+   (:prefix ("z" . "zoom")
+    :desc "Text"                "t" #'+hydra/text-zoom/body)))
+
+;;;; Isearch
+ (:after isearch
+  (:map isearch-mode-map
+   [return] #'+isearch-exit-start-of-match
+   "RET"    #'+isearch-exit-start-of-match
+   "C-RET"  #'isearch-exit))
+
+;;;; Ivy
+ (:after ivy
+  (:map ivy-minibuffer-map
+   [return] #'ivy-alt-done
+   "RET"    #'ivy-alt-done))
+
+;;;; Outshine
+ (:after outshine
+  (:map outshine-mode-map
+   "TAB" #'outshine-cycle
+   [tab] #'outshine-cycle
+   [M-up] nil
+   [M-left] nil
+   [M-right] nil
+   [M-down] nil))
+
+;;;; Company
+ (:after company
+  (:map company-active-map
+   [tab] nil
+   "TAB" nil))
+
+;;;; Yasnippet
+ (:after yasnippet
+  (:map yas-keymap
+   [tab] #'yas-next-field
+   "TAB" #'yas-next-field))
+
+;;;; fzf
+ ;; (map! :leader "SPC" #'fzf-projectile)
+
+;;;; Flycheck
+ (:after flycheck
+  (:map flycheck-mode-map
+   "M-n" #'flycheck-next-error
+   "M-p" #'flycheck-previous-error))
+
+;;;; org-jira
+ ;; (:after org-jira
+ ;;  (:map org-jira-entry-mode-map
+ ;;   :localleader
+ ;;   (:prefix ("j" . "Jira Integration")
+ ;;    (:prefix ("c" . "Comment")
+ ;;     :desc "Add comment" "c" #'org-jira-add-comment
+ ;;     :desc "Update comment" "u" #'org-jira-update-comment)
+ ;;    (:prefix ("i" . "Issue")
+ ;;     :desc "Assign issue" "a" #'org-jira-assign-issue
+ ;;     :desc "Browse issue" "b" #'org-jira-browse-issue
+ ;;     :desc "Create issue" "c" #'org-jira-create-issue
+ ;;     :desc "Get issues by fixversion" "f" #'org-jira-get-issues-by-fixversion
+ ;;     :desc "Get issues" "g" #'org-jira-get-issues
+ ;;     :desc "Get issue heads" "h" #'org-jira-get-issues-headonly
+ ;;     :desc "Query issues custom jql" "j" #'org-jira-get-issues-from-custom-jql
+ ;;     :desc "Copy issue key" "k" #'org-jira-copy-current-issue-key
+ ;;     :desc "Refresh issue" "r" #'org-jira-refresh-issue
+ ;;     :desc "Refresh all issues" "R" #'org-jira-refresh-issues-in-buffer
+ ;;     :desc "Next step issue" "n" #'org-jira-progress-issue-next
+ ;;     :desc "Update issue" "u" #'org-jira-update-issue
+ ;;     :desc "Issue workflow" "w" #'org-jira-progress-issue)
+ ;;    (:prefix ("s" . "Subtask")
+ ;;     :desc "Create subtask" "c" #'org-jira-create-subtask
+ ;;     :desc "Get Subtask" "g" #'org-jira-get-subtasks)
+ ;;    (:prefix ("p" . "Project")
+ ;;     :desc "Get projects" "g" #'org-jira-get-projects)
+ ;;    :desc "Send TODO to jira" "t" #'org-jira-todo-to-jira
+ ;;    :desc "Update logs from clock" "u" #'org-jira-update-worklogs-from-org-clocks)))
+
+;;;; Languages
+;;;;; Rust
+ (:after rustic
+  (:map rustic-mode-map
+   :localleader
+   (:prefix ("r" . "Rustic")
+    :desc "Clippy pretty"     "C" #'rustic-cargo-clippy
+    :desc "Popup"             "r" #'rustic-popup
+    :desc "Format everything" "f" #'rustic-cargo-fmt
+    :desc "Cargo-outdated"    "u" #'rustic-cargo-outdated)))
+
+;;;;; Python
+ (:after python
+  (:map python-mode-map
+   :localleader
+   :desc "Blacken buffer" "cb" #'blacken-buffer)))

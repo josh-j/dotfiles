@@ -75,7 +75,6 @@
   (setq
    ;; obsolete, since https://github.com/emacs-lsp/lsp-mode/commit/4796140ef3b3f478725767e777c5af145602fd2e
    ;; but I add it because of module :lang cc
-   lsp-enable-semantic-highlighting nil
    lsp-enable-semantic-tokens nil
    lsp-progress-via-spinner nil
    lsp-idle-delay 0.5
@@ -158,7 +157,7 @@
   (setq company-global-modes '(not erc-mode message-mode help-mode gud-mode org-mode)
         company-idle-delay 0.0
         company-minimum-prefix-length 1
-        company-transformers nil
+                                        ;company-transformers nil
         company-lsp-async 1
         company-lsp-cache-candidates nil))
 

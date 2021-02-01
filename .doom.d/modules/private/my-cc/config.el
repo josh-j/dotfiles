@@ -25,12 +25,15 @@
 
 ;;;;; LSP settings
 (when (featurep! :tools lsp)
-  (setq lsp-clients-clangd-args '("-j=3"
+  (setq lsp-clients-clangd-args '("-j=8"
                                   "--background-index"
                                   "--clang-tidy"
                                   "--pch-storage=memory"
                                   "--limit-results=20"
+                                  "--cross-file-rename"
+                                  "--suggest-missing-includes"
                                   "--completion-style=bundled"
+                                  "--compile-commands-dir=build"
                                   "--header-insertion=never")))
 (after! lsp-clangd (set-lsp-priority! 'clangd 2))
 

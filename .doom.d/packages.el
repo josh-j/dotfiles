@@ -19,6 +19,8 @@
 (package! outshine)
 ;; (package! evil-escape :disable t)
 ;; (package! org-jira)
+(package! ccls)
+(package! rg)
 
 
 ;;; Themes

@@ -26,8 +26,7 @@
 ;;     (require 'lsp-modeline)
 ;;     (setq-local lsp-ui-sideline-show-symbol nil)
 ;;     (when (string-match-p "/llvm" buffer-file-name)
-;;       (setq-local lsp-enable-file-watchers nil))
-;;     (if +my-use-eglot (call-interactively #'eglot) (lsp))))
+;;       (setq-local lsp-enable-file-watchers nil))))
 
 ;; (defun ccls/callee ()
 ;;   (interactive)

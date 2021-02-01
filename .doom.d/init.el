@@ -15,7 +15,7 @@
        :completion
        (company                         ; the ultimate code completion backend
         +childframe)
-       (selectrum +orderless)
+       (selectrum +prescient)
        ;; (helm +fuzzy)
        ;; (ivy
        ;;  +icons

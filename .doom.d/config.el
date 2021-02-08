@@ -69,8 +69,6 @@
 (setq evil-goggles-duration 0.2)
 
 ;;;; LSP
-(set-eglot-client! 'cc-mode '("clangd"))
-(setq lsp-headerline-breadcrumb-enable t)
 (after! lsp
   (setq
    ;; obsolete, since https://github.com/emacs-lsp/lsp-mode/commit/4796140ef3b3f478725767e777c5af145602fd2e
@@ -78,7 +76,7 @@
    lsp-enable-semantic-tokens nil
    lsp-progress-via-spinner nil
    lsp-idle-delay 0.5
-   lsp-headerline-breadcrumb-enable nil
+   lsp-headerline-breadcrumb-enable t
    lsp-print-performance nil
    lsp-enable-indentation t
    lsp-enable-on-type-formatting nil
@@ -148,18 +146,21 @@
         flymake-wrap-around nil))
 
 ;;;; Fish
-(when (and (executable-find "fish")
-           (require 'fish-completion nil t))
-  (global-fish-completion-mode))
+;; (when (and (executable-find "fish")
+;;            (require 'fish-completion nil t))
+;;   (global-fish-completion-mode))
 
 ;;;; company
+
 (after! company
+  (company-prescient-mode)
   (setq company-global-modes '(not erc-mode message-mode help-mode gud-mode org-mode)
         company-idle-delay 0.0
-        company-minimum-prefix-length 1
-                                        ;company-transformers nil
+        company-minimum-prefix-length 2
         company-lsp-async 1
+        company-transformers '(company-sort-prefer-same-case-prefix company-sort-by-backend-importance)
         company-lsp-cache-candidates nil))
+(add-hook 'company #'company-prescient-mode)
 
 ;;;; ivy
 (after! ivy-posframe (setq ivy-posframe-display-functions-alist
@@ -178,26 +179,26 @@
   (setq swiper-goto-start-of-match t))
 
 ;;;; Helm
-(after! helm
-  (helm-adaptive-mode 1)
-  (setq helm-display-header-line t
-        helm-find-files-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
-        helm-mode-line-string "\
-\\<helm-map>\
-\\[helm-help]:Help \
-\\[helm-select-action]:Act \
-\\[helm-maybe-exit-minibuffer]/\
-f1/f2/f-n:NthAct \
-\\[helm-toggle-suspend-update]:Tog.suspend"
-        helm-posframe-border-width 4
-        helm-posframe-parameters '((min-width . 90)
-                                   (min-height . 15)
-                                   (border-width . 4)
-                                   (left-fringe . 8)
-                                   (right-fringe . 8))
-        helm-posframe-poshandler #'posframe-poshandler-frame-top-center)
-  ;; (helm-posframe-setup) ; For the posframe goodness
-  )
+;; (after! helm
+;;   (helm-adaptive-mode 1)
+;;   (setq helm-display-header-line t
+;;         helm-find-files-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
+;;         helm-mode-line-string "\
+;; \\<helm-map>\
+;; \\[helm-help]:Help \
+;; \\[helm-select-action]:Act \
+;; \\[helm-maybe-exit-minibuffer]/\
+;; f1/f2/f-n:NthAct \
+;; \\[helm-toggle-suspend-update]:Tog.suspend"
+;;         helm-posframe-border-width 4
+;;         helm-posframe-parameters '((min-width . 90)
+;;                                    (min-height . 15)
+;;                                    (border-width . 4)
+;;                                    (left-fringe . 8)
+;;                                    (right-fringe . 8))
+;;         helm-posframe-poshandler #'posframe-poshandler-frame-top-center)
+;;   ;; (helm-posframe-setup) ; For the posframe goodness
+;;   )
 
 ;;;; Info colors
 (use-package! info-colors

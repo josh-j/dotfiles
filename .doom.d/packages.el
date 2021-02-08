@@ -6,7 +6,7 @@
 ;; (package! another-package :recipe (:host github :repo "username/repo"))
 ;; (package! builtin-package :disable t)
 
-(unpin! t)
+                                        ;(unpin! t)
 
 
 ;;; Tools
@@ -14,13 +14,14 @@
 ;; (package! jinja2-mode)
 (package! aggressive-indent)
 (package! realgud-lldb)
-(package! key-quiz)
+                                        ;(package! key-quiz)
 ;; (package! fish-completion)
 (package! outshine)
 ;; (package! evil-escape :disable t)
 ;; (package! org-jira)
-(package! ccls)
-(package! rg)
+                                        ;(package! ccls)
+                                        ;(package! rg)
+(package! company-prescient)
 
 
 ;;; Themes

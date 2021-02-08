@@ -30,16 +30,16 @@
        ophints                ; highlight the region an operation acts on
        popup                  ; tame sudden yet inevitable temporary windows
        ligatures              ; replace bits of code with pretty symbols
-       ;; (modeline +light)
-       (telephone-line
-        +minions
-        +keycast)                    ; PRIVATE another modeline implementation
+       (modeline +light)
+                                        ;(telephone-line
+                                        ; +minions
+                                        ; +keycast)                    ; PRIVATE another modeline implementation
        treemacs                      ; a project drawer, like neotree but cooler
        ;; unicode                ; extended unicode support for various languages
        vc-gutter              ; vcs diff in the fringe
        vi-tilde-fringe        ; fringe tildes to mark beyond EOB
        window-select          ; visually switch windows
-       ;; tab-workspaces             ; tab emulation, persistence & separate workspaces
+       ;;tab-workspaces             ; tab emulation, persistence & separate workspaces
 
        :editor
        (evil +everywhere)        ; come to the dark side, we have cookies

@@ -94,7 +94,7 @@
     (sp-local-pair 'c++-mode "(" nil :post-handlers '(:rem ("||\n[i]" "RET")))
     (sp-local-pair 'c++-mode "{" nil :post-handlers '(:rem ("| "      "SPC"))))
 
-  (advice-add 'c-electric-colon :after #'+cc-better-electric-colon-a)
+  ;(advice-add 'c-electric-colon :after #'+cc-better-electric-colon-a)
 
   (setf (alist-get 'c++-mode c-default-style) "Google")
 

@@ -10,23 +10,22 @@
 
 
 ;;; Tools
-(package! imenu-list)
+;(package! imenu-list) ;; for c++ outline
 ;; (package! jinja2-mode)
-(package! aggressive-indent)
+;(package! aggressive-indent)
 (package! realgud-lldb)
                                         ;(package! key-quiz)
 ;; (package! fish-completion)
-(package! outshine)
+                                        ;(package! outshine)
 ;; (package! evil-escape :disable t)
 ;; (package! org-jira)
                                         ;(package! ccls)
                                         ;(package! rg)
 (package! company-prescient)
-
 
 ;;; Themes
 ;; (package! modus-themes)
-(package! solaire-mode :disable t)
+;(package! solaire-mode :disable t)
 
 
 ;;; UI
@@ -35,7 +34,7 @@
 
 
 ;;; Org
-(package! ox-gfm)
+;(package! ox-gfm)
 
 
 ;;; Languages
@@ -64,5 +63,5 @@
 
 
 ;; Local workspaces packages
-(package! bufler :recipe (:host github :repo "alphapapa/bufler.el"))
-(package! burly :recipe (:host github :repo "alphapapa/burly.el"))
+                                        ;(package! bufler :recipe (:host github :repo "alphapapa/bufler.el"))
+                                        ;(package! burly :recipe (:host github :repo "alphapapa/burly.el"))

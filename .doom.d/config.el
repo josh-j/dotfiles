@@ -12,28 +12,10 @@
 
 
 ;;; Theme
-(setq doom-theme 'doom-one
+(setq doom-theme 'doom-spacegrey
       doom-themes-treemacs-theme 'doom-colors
       doom-acario-dark-brighter-modeline t
       doom-acario-light-brighter-modeline t)
-
-(setq current-theme doom-theme ; Use the dark theme first, better to flash dark->light than light->dark
-      gagbo-light-theme 'doom-one
-      gagbo-dark-theme 'doom-one
-      gagbo-light-theme-begin '(00 00 9)
-      gagbo-light-theme-end '(00 00 20))
-
-(run-with-timer 0 900 #'gagbo-circadian-theme)
-
-;;;; HL-TODO faces
-;; (setq hl-todo-keyword-faces
-;;       `(("TODO"  . ,(face-foreground 'warning))
-;;         ("FIXME" . ,(face-foreground 'error))
-;;         ("NOTE"  . ,(face-foreground 'success))))
-
-;;;; Rainbow mode with overlays
-(use-package ov-rainbow-mode
-  :commands ov-rainbow-mode)
 
 ;;;; Org and Treemacs
 (doom-themes-treemacs-config)
@@ -44,6 +26,7 @@
 ;;;; Window splitting
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
+
 
 ;;;; Global substitute
 (setq evil-ex-substitute-global t)
@@ -83,7 +66,7 @@
    lsp-enable-symbol-highlighting nil
    lsp-log-io nil))
 
-(setq +lsp-company-backends '(company-capf :with company-yasnippet))
+                                        ;(setq +lsp-company-backends '(company-capf :with company-yasnippet))
 
 (after! lsp-ui
   (setq lsp-ui-sideline-enable nil
@@ -113,12 +96,6 @@
 (use-package rainbow-mode
   :diminish
   :commands rainbow-mode)
-
-;;;; Key Quiz
-(use-package! key-quiz
-  :commands (key-quiz)
-  :init
-  (setq key-quiz-matching-regexp "^<?[MCSgz]"))
 
 ;;;; Aggressive Indent
 (use-package! aggressive-indent
@@ -153,14 +130,17 @@
 ;;;; company
 
 (after! company
-  (company-prescient-mode)
   (setq company-global-modes '(not erc-mode message-mode help-mode gud-mode org-mode)
         company-idle-delay 0.0
         company-minimum-prefix-length 2
         company-lsp-async 1
         company-transformers '(company-sort-prefer-same-case-prefix company-sort-by-backend-importance)
         company-lsp-cache-candidates nil))
-(add-hook 'company #'company-prescient-mode)
+
+(use-package! company-prescient
+  :commands (company-prescient-mode)
+  :defer t)
+
 
 ;;;; ivy
 (after! ivy-posframe (setq ivy-posframe-display-functions-alist
@@ -178,46 +158,10 @@
 (after! swiper
   (setq swiper-goto-start-of-match t))
 
-;;;; Helm
-;; (after! helm
-;;   (helm-adaptive-mode 1)
-;;   (setq helm-display-header-line t
-;;         helm-find-files-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
-;;         helm-mode-line-string "\
-;; \\<helm-map>\
-;; \\[helm-help]:Help \
-;; \\[helm-select-action]:Act \
-;; \\[helm-maybe-exit-minibuffer]/\
-;; f1/f2/f-n:NthAct \
-;; \\[helm-toggle-suspend-update]:Tog.suspend"
-;;         helm-posframe-border-width 4
-;;         helm-posframe-parameters '((min-width . 90)
-;;                                    (min-height . 15)
-;;                                    (border-width . 4)
-;;                                    (left-fringe . 8)
-;;                                    (right-fringe . 8))
-;;         helm-posframe-poshandler #'posframe-poshandler-frame-top-center)
-;;   ;; (helm-posframe-setup) ; For the posframe goodness
-;;   )
 
 ;;;; Info colors
 (use-package! info-colors
   :hook (Info-selection . info-colors-fontify-mode))
-
-;;;; asciidoc
-;; (use-package! adoc-mode
-;;   :mode (("\\.asciidoc\\'" . adoc-mode)
-;;          ("\\.asciidoc.fr\\'" . adoc-mode)
-;;          ("\\.adoc.fr\\'" . adoc-mode)))
-
-;;;; Jinja2
-;; (use-package! jinja2-mode
-;;   :mode (("\\.j2\\'" . jinja2-mode)
-;;          ("\\.jinja\\'" . jinja2-mode)))
-
-;;;; djinni
-;; (use-package! djinni-mode
-;;   :mode (("\\.djinni\\'" . djinni-mode)))
 
 ;;;; elisp
 (use-package! flycheck-package
@@ -234,7 +178,7 @@
   (gagbo--go-flycheck-setup))
 
 ;;;; org
-(load! "org-config")
+;(load! "org-config")
 
 ;;;; python
 (after! lsp
@@ -355,7 +299,7 @@
     ("^\\*Checkdoc Status\\*$"
      :vslot -2 :select ignore :quit t :ttl 0)
     ("^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"
-     :slot -2 :size 0.45 :side right :autosave t :quit current :ttl nil
+     :slot -2 :size 0.15 :side bottom :autosave t :quit t :ttl nil
      :modeline t)
     ("^ \\*undo-tree\\*"
      :slot 2 :side left :size 20 :select t :quit t)
@@ -388,14 +332,14 @@
 
  (:leader
 ;;;; :ui workspace rework
-  "bb" #'bufler-switch-buffer
-  "bi" #'bufler
-  (:prefix-map ("j" . "Bookmarks")
-   :desc "Create Bookmark" "c" 'bookmark-map
-   :desc "Restore burly bookmark" "b" 'burly-open-bookmark)
-  (:prefix-map ("TAB" . "Workspaces")
-   :desc "Save the workspaces" "s" 'burly-bookmark-frames
-   :desc "Restore workspaces" "g" 'burly-open-bookmark)
+  ;; "bb" #'bufler-switch-buffer
+  ;; "bi" #'bufler
+  ;; (:prefix-map ("j" . "Bookmarks")
+  ;;  :desc "Create Bookmark" "c" 'bookmark-map
+  ;;  :desc "Restore burly bookmark" "b" 'burly-open-bookmark)
+  ;; (:prefix-map ("TAB" . "Workspaces")
+  ;;  :desc "Save the workspaces" "s" 'burly-bookmark-frames
+  ;;  :desc "Restore workspaces" "g" 'burly-open-bookmark)
 
 ;;;; Quit
   (:prefix "q"
@@ -446,10 +390,10 @@
    [M-down] nil))
 
 ;;;; Company
- (:after company
-  (:map company-active-map
-   [tab] nil
-   "TAB" nil))
+ ;; (:after company
+ ;;  (:map company-active-map
+ ;;   [tab] nil
+ ;;   "TAB" nil))
 
 ;;;; Yasnippet
  (:after yasnippet
@@ -465,36 +409,6 @@
   (:map flycheck-mode-map
    "M-n" #'flycheck-next-error
    "M-p" #'flycheck-previous-error))
-
-;;;; org-jira
- ;; (:after org-jira
- ;;  (:map org-jira-entry-mode-map
- ;;   :localleader
- ;;   (:prefix ("j" . "Jira Integration")
- ;;    (:prefix ("c" . "Comment")
- ;;     :desc "Add comment" "c" #'org-jira-add-comment
- ;;     :desc "Update comment" "u" #'org-jira-update-comment)
- ;;    (:prefix ("i" . "Issue")
- ;;     :desc "Assign issue" "a" #'org-jira-assign-issue
- ;;     :desc "Browse issue" "b" #'org-jira-browse-issue
- ;;     :desc "Create issue" "c" #'org-jira-create-issue
- ;;     :desc "Get issues by fixversion" "f" #'org-jira-get-issues-by-fixversion
- ;;     :desc "Get issues" "g" #'org-jira-get-issues
- ;;     :desc "Get issue heads" "h" #'org-jira-get-issues-headonly
- ;;     :desc "Query issues custom jql" "j" #'org-jira-get-issues-from-custom-jql
- ;;     :desc "Copy issue key" "k" #'org-jira-copy-current-issue-key
- ;;     :desc "Refresh issue" "r" #'org-jira-refresh-issue
- ;;     :desc "Refresh all issues" "R" #'org-jira-refresh-issues-in-buffer
- ;;     :desc "Next step issue" "n" #'org-jira-progress-issue-next
- ;;     :desc "Update issue" "u" #'org-jira-update-issue
- ;;     :desc "Issue workflow" "w" #'org-jira-progress-issue)
- ;;    (:prefix ("s" . "Subtask")
- ;;     :desc "Create subtask" "c" #'org-jira-create-subtask
- ;;     :desc "Get Subtask" "g" #'org-jira-get-subtasks)
- ;;    (:prefix ("p" . "Project")
- ;;     :desc "Get projects" "g" #'org-jira-get-projects)
- ;;    :desc "Send TODO to jira" "t" #'org-jira-todo-to-jira
- ;;    :desc "Update logs from clock" "u" #'org-jira-update-worklogs-from-org-clocks)))
 
 ;;;; Languages
 ;;;;; Rust

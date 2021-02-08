@@ -11,15 +11,15 @@
 (load! "before-init")
 
 (doom! :input
-       ;; (layout +bepo)
        :completion
        (company                         ; the ultimate code completion backend
         +childframe)
-       (selectrum +prescient)
-       ;; (helm +fuzzy)
-       ;; (ivy
-       ;;  +icons
-       ;;  +fuzzy)
+       ;;(selectrum +prescient)
+       (ivy
+         +prescient
+         +icons
+        ; +fuzzy
+         )
 
        :ui
        doom                   ; what makes DOOM look the way it does
@@ -31,9 +31,6 @@
        popup                  ; tame sudden yet inevitable temporary windows
        ligatures              ; replace bits of code with pretty symbols
        (modeline +light)
-                                        ;(telephone-line
-                                        ; +minions
-                                        ; +keycast)                    ; PRIVATE another modeline implementation
        treemacs                      ; a project drawer, like neotree but cooler
        ;; unicode                ; extended unicode support for various languages
        vc-gutter              ; vcs diff in the fringe
@@ -80,7 +77,7 @@
        pdf                              ; pdf enhancements
        rgb                              ; creating color strings
                                         ;tmux                             ; an API for interacting with tmux
-       tree-sitter                      ; PRIVATE syntax-tree at speed of light
+       ;;tree-sitter                      ; PRIVATE syntax-tree at speed of light
 
        :os
        ;; tty
@@ -103,8 +100,9 @@
        ;; ocaml                 ; Cocorico vive l'INRIA
        (org                  ; organize your plain life in plain text
         +hugo                ; use Emacs for hugo blogging
-        +pandoc              ; export-with-pandoc support
-        +present)            ; Emacs for presentations
+                                        ;+pandoc              ; export-with-pandoc support
+                                        ;+present
+        )            ; Emacs for presentations
        ;; plantuml              ; diagrams for confusing people more
        ;;                                  ;powershell            ; PRIVATE Look through the windows ; it's a shell !
        ;;                                  ;(python +conda +lsp +pyright)  ; beautiful is better than ugly

@@ -12,7 +12,7 @@
 ;;; UI
 ;; Ignore errors if the fonts aren't found.
 (ignore-errors
-  (setq doom-font (font-spec :family "JetBrains Mono" :size 12 :weight 'medium)
+  (setq doom-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium)
         doom-big-font (font-spec :family "JetBrains Mono" :size 26)
         doom-variable-pitch-font (font-spec :family "JetBrains Mono" :height 0.5)
         doom-serif-font (font-spec :family "JetBrains Mono" :height 1.0)))
@@ -21,7 +21,7 @@
       +pretty-code-hasklig-font-name "Hasklig"
       +pretty-code-iosevka-font-name "Iosevka")
 
-(setq display-line-numbers-type nil)
+(setq display-line-numbers-type 'relative)
 
 ;;;; Frames/Windows
 ;;;;; Maximize window

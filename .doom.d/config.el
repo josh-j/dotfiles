@@ -18,6 +18,7 @@
       doom-acario-light-brighter-modeline t)
 
 ;;;; Org and Treemacs
+(doom-themes-visual-bell-config)
 (doom-themes-treemacs-config)
 (doom-themes-org-config)
 
@@ -49,8 +50,14 @@
 (setq +ligatures-in-modes (when IS-LINUX '(emacs-lisp-mode haskell-mode python-mode)))
 
 ;;;; Ophints
-(setq evil-goggles-duration 0.2)
-
+(setq evil-goggles-duration 0.1)
+(setq evil-goggles-blocking-duration 0.1)
+(setq evil-goggles-async-duration 0.9)
+(setq evil-goggles-enable-paste t)
+(setq evil-goggles-enable-surround t)
+(setq evil-goggles-enable-delete t)
+(setq evil-goggles-enable-change t)
+(setq evil-goggles-pulse t)
 ;;;; LSP
 (after! lsp
   (setq
@@ -66,7 +73,7 @@
    lsp-enable-symbol-highlighting nil
    lsp-log-io nil))
 
-                                        ;(setq +lsp-company-backends '(company-capf :with company-yasnippet))
+;(setq +lsp-company-backends '(company-capf :with company-yasnippet))
 
 (after! lsp-ui
   (setq lsp-ui-sideline-enable nil
@@ -134,12 +141,12 @@
         company-idle-delay 0.0
         company-minimum-prefix-length 2
         company-lsp-async 1
-        company-transformers '(company-sort-prefer-same-case-prefix company-sort-by-backend-importance)
+;        company-transformers '(company-sort-prefer-same-case-prefix company-sort-by-backend-importance)
         company-lsp-cache-candidates nil))
 
 (use-package! company-prescient
-  :commands (company-prescient-mode)
-  :defer t)
+  :init (company-prescient-mode 1))
+
 
 
 ;;;; ivy

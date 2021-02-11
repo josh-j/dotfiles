@@ -135,13 +135,18 @@
 ;;   (global-fish-completion-mode))
 
 ;;;; company
-
 (after! company
   (setq company-global-modes '(not erc-mode message-mode help-mode gud-mode org-mode)
-        company-idle-delay 0.0
+        company-idle-delay 0
+        company-tooltip-align-annotations t
+        company-tooltip-limit 12
+        company-echo-delay (if (display-graphic-p) nil 0)
+        company-require-match nil
+        company-dabbrev-downcase nil
+        company-dabbrev-ignore-case nil
         company-minimum-prefix-length 2
         company-lsp-async 1
-;        company-transformers '(company-sort-prefer-same-case-prefix company-sort-by-backend-importance)
+        ;company-transformers '(company-sort-prefer-same-case-prefix company-sort-by-backend-importance)
         company-lsp-cache-candidates nil))
 
 (use-package! company-prescient

@@ -28,8 +28,10 @@
   (setq lsp-clients-clangd-args '("-j=8"
                                   "--background-index"
                                   "--clang-tidy"
+                                  "--clang-tidy-checks=modernize-*,performance-*,google-*,cppcoreguidelines-,avoid-magic-numbers-,-magicclang-analyzer-*"
                                   "--pch-storage=memory"
-                                  "--limit-results=20"
+                                  "--pretty"
+                                  "--limit-results=10"
                                   "--cross-file-rename"
                                   "--suggest-missing-includes"
                                   "--completion-style=bundled"
@@ -99,3 +101,8 @@
   (setf (alist-get 'c++-mode c-default-style) "Google")
 
   (setq +cc-default-header-file-mode 'c++-mode))
+
+
+(use-package! modern-cpp-font-lock
+  :ensure t)
+;(modern-c++-font-lock-global-mode 1)

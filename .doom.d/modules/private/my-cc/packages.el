@@ -10,3 +10,4 @@
 ;; https://github.com/raxod502/straight.el/issues/279
 (package! google-c-style
   :recipe (:host github :repo "google/styleguide" :branch "gh-pages"))
+(package! modern-cpp-font-lock)

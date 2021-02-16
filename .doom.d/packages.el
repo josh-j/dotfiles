@@ -24,9 +24,12 @@
 (package! company-prescient)
 
 ;;; Themes
-;; (package! modus-themes)
+(package! modus-themes)
+(package! ample-theme)
+;(package! aurora-themes)
+(package! sublime-themes)
+(package! subatomic-theme)
 ;(package! solaire-mode :disable t)
-
 
 ;;; UI
 (package! page-break-lines)

@@ -12,10 +12,12 @@
 
 
 ;;; Theme
-(setq doom-theme 'doom-spacegrey
+(setq doom-theme 'subatomic
       doom-themes-treemacs-theme 'doom-colors
       doom-acario-dark-brighter-modeline t
-      doom-acario-light-brighter-modeline t)
+      doom-acario-light-brighter-modeline t
+      subatomic-more-visible-comment-delimiters t)
+
 
 ;;;; Org and Treemacs
 (doom-themes-visual-bell-config)
@@ -105,11 +107,11 @@
   :commands rainbow-mode)
 
 ;;;; Aggressive Indent
-(use-package! aggressive-indent
-  :commands (aggressive-indent-mode))
+;(use-package! aggressive-indent
+;  :commands (aggressive-indent-mode))
 ;; Add hooks for messy code like (my) elisp and CSS
-(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-(add-hook 'css-mode-hook #'aggressive-indent-mode)
+;(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+;(add-hook 'css-mode-hook #'aggressive-indent-mode)
 
 ;;;; Page Break Lines
 (use-package! page-break-lines

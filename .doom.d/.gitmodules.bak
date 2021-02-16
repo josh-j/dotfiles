@@ -1,0 +1,9 @@
+[submodule "lisp/acario-themes"]
+	path = lisp/acario-themes
+	url = git@github.com:gagbo/acario-themes
+[submodule "lisp/bufler.el"]
+	path = lisp/bufler.el
+	url = git@github.com:gagbo/bufler.el
+[submodule "lisp/burly.el"]
+	path = lisp/burly.el
+	url = git@github.com:gagbo/burly.el

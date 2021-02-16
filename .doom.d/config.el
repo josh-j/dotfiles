@@ -12,7 +12,7 @@
 
 
 ;;; Theme
-(setq doom-theme 'subatomic
+(setq doom-theme 'doom-solarized-light
       doom-themes-treemacs-theme 'doom-colors
       doom-acario-dark-brighter-modeline t
       doom-acario-light-brighter-modeline t

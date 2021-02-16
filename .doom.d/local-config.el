@@ -15,7 +15,7 @@
   (setq doom-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium)
         doom-big-font (font-spec :family "JetBrains Mono" :size 26)
         doom-variable-pitch-font (font-spec :family "JetBrains Mono" :height 0.5)
-        doom-serif-font (font-spec :family "Menlo" :height 1.0)))
+        doom-serif-font (font-spec :family "Noto Sans" :height 1.0)))
 
 (setq +pretty-code-fira-font-name "Fira Code Symbol"
       +pretty-code-hasklig-font-name "Hasklig"

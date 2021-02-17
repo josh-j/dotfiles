@@ -11,11 +11,15 @@
       calendar-longitude 2.3488)
 ;;; UI
 ;; Ignore errors if the fonts aren't found.
-(ignore-errors
-  (setq doom-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium)
+;;(ignore-errors
+  (setq doom-font (font-spec :family "Iosevka" :weight 'normal :slant 'normal :width 'expanded :size 13)
         doom-big-font (font-spec :family "JetBrains Mono" :size 26)
         doom-variable-pitch-font (font-spec :family "JetBrains Mono" :height 0.5)
-        doom-serif-font (font-spec :family "Noto Sans" :height 1.0)))
+        doom-serif-font (font-spec :family "Noto Sans" :height 1.0))
+
+(setq doom-modeline-height 1)
+(set-face-attribute 'mode-line nil :family "Iosevka Term Regular" :height 0.75) ;;smaller font in modeling
+(set-face-attribute 'mode-line-inactive nil :family "Iosevka Term Regular" :height 0.75)
 
 (setq +pretty-code-fira-font-name "Fira Code Symbol"
       +pretty-code-hasklig-font-name "Hasklig"

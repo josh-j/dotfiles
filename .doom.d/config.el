@@ -45,7 +45,7 @@
 (setq which-key-idle-delay 0.3)
 
 ;;;; Tabs and final EOL
-(setq-default tab-width 8)
+(setq-default tab-width 2)
 (setq require-final-newline t)
 
 ;;;; Ligatures
@@ -69,13 +69,15 @@
    lsp-progress-via-spinner nil
    lsp-idle-delay 0.5
    lsp-headerline-breadcrumb-enable t
+   lsp-enable-on-type-formatting t
    lsp-print-performance nil
    lsp-enable-indentation t
    lsp-enable-on-type-formatting nil
    lsp-enable-symbol-highlighting nil
    lsp-log-io nil))
 
-;(setq +lsp-company-backends '(company-capf :with company-yasnippet))
+;; (setq +lsp-company-backends '(company-capf :with company-yasnippet))
+;; (setq +lsp-company-backends '(company-clang))
 
 (after! lsp-ui
   (setq lsp-ui-sideline-enable nil
@@ -220,8 +222,8 @@
 
 ;;;  cc
 ;;;
-;; (with-eval-after-load 'company
-;;   (add-to-list 'company-backends 'company-clang))
+ ;; (with-eval-after-load 'company
+ ;;   (add-to-list 'company-backends 'company-clang))
 ;;;; rust
 (after! rustic
   (set-formatter! 'rustic-mode #'rustic-cargo-fmt))
@@ -334,6 +336,8 @@
 (map!
 ;;;; Window movement
  :n "gsi" #'oi-jump
+
+ :n "gh" #'lsp-clangd-find-other-file
 
  (:map evil-treemacs-state-map
   "M-j" #'multi-next-line

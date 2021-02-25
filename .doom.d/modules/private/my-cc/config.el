@@ -15,7 +15,7 @@
   :map (c-mode-map c++-mode-map)
   (:leader
    :n "=" #'clang-format-region))
- (:after ccls
+ (:after lsp
   :map (c-mode-map c++-mode-map)
   :localleader
   :desc "breakpoint"
@@ -102,7 +102,3 @@
 
   (setq +cc-default-header-file-mode 'c++-mode))
 
-
-(use-package! modern-cpp-font-lock
-  :ensure t)
-;(modern-c++-font-lock-global-mode 1)

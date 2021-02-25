@@ -38,17 +38,23 @@ This function should only modify configuration layer settings."
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     auto-completion
+     (auto-completion :variables
+                      auto-completion-use-company-box t
+                      auto-completion-enable-sort-by-usage t
+                      auto-completion-enable-snippets-in-popup t
+                      )
      better-defaults
+     (cmake :variables cmake-backend 'lsp
+            cmake-enable-cmake-ide-support t)
      (c-c++ :variables
             c-c++-backend 'lsp-ccls
             c-c++-enable-google-newline t
             c-c++-enable-google-style t
             c-c++-adopt-subprojects t
-            c-c++-enable-auto-newline t
-            c-c++-lsp-enable-semantic-highlight t)
+            c-c++-enable-auto-newline nil
+            c-c++-lsp-enable-semantic-highlight nil)
      emacs-lisp
-     ;; git
+     git
      helm
      lsp
      ;; markdown
@@ -59,11 +65,11 @@ This function should only modify configuration layer settings."
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
      ;; spell-checking
-     ;; syntax-checking
-     ;; version-control
+     syntax-checking
+     version-control
      (treemacs :variables
-               treemacs-use-all-the-icons-theme t))
-
+               treemacs-use-all-the-icons-theme t)
+     )
 
    ;; List of additional packages that will be installed without being wrapped
    ;; in a layer (generally the packages are installed only and should still be
@@ -73,7 +79,7 @@ This function should only modify configuration layer settings."
    ;; `dotspacemacs/user-config'. To use a local version of a package, use the
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(evil-smartparens flycheck-clang-tidy)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -224,7 +230,7 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(doom-one)
+   dotspacemacs-themes '(solarized-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -241,7 +247,7 @@ It should only modify the values of Spacemacs settings."
    ;; a non-negative integer (pixel size), or a floating-point (point size).
    ;; Point size is recommended, because it's device independent. (default 10.0)
    dotspacemacs-default-font '("JetBrains Mono"
-                               :size 12.0
+                               :size 11.0
                                :weight medium
                                :width normal)
 
@@ -463,7 +469,7 @@ It should only modify the values of Spacemacs settings."
    ;; `trailing' to delete only the whitespace at end of lines, `changed' to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-whitespace-cleanup 'all
 
    ;; If non nil activate `clean-aindent-mode' which tries to correct
    ;; virtual indentation of simple modes. This can interfer with mode specific
@@ -521,6 +527,40 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+
+  (eval-after-load 'flycheck
+    (add-hook 'flycheck-mode-hook #'flycheck-clang-tidy-setup))
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "pr" 'projectile-run-project)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "pg" 'projectile-configure-project)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "cr" 'projectile-run-project)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "cg" 'projectile-configure-project)
+  (setq flycheck-clang-tidy-extra-options "--checks=modernize-*,performance-*,google-*,cppcoreguidelines-,avoid-magic-numbers-,-magicclang-analyzer-*")
+  (setq flycheck-clang-tidy-build-path "build")
+  (setq flycheck-clang-tidy-executable "clang-tidy")
+  (setq flycheck-clang-args '("-j=8"
+                              "--background-index"
+                              "--clang-tidy"
+                              "--clang-tidy-checks=modernize-*,performance-*,google-*,cppcoreguidelines-,avoid-magic-numbers-,-magicclang-analyzer-*"
+                              "--pch-storage=memory"
+                              "--pretty"
+                              "--limit-results=10"
+                              "--cross-file-rename"
+                              "--suggest-missing-includes"
+                              "--completion-style=bundled"
+                              "--compile-commands-dir=build"
+                              "--header-insertion=never"))
+  (setq lsp-clients-clangd-args '("-j=8"
+                                  "--background-index"
+                                  "--clang-tidy"
+                                  "--clang-tidy-checks=modernize-*,performance-*,google-*,cppcoreguidelines-,avoid-magic-numbers-,-magicclang-analyzer-*"
+                                  "--pch-storage=memory"
+                                  "--pretty"
+                                  "--limit-results=10"
+                                  "--cross-file-rename"
+                                  "--suggest-missing-includes"
+                                  "--completion-style=bundled"
+                                  "--compile-commands-dir=build"
+                                  "--header-insertion=never"))
   (setq projectile-project-search-path '("~/Projects/")))
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -537,7 +577,21 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
-   '(dap-mode bui helm-rtags google-c-style flycheck-ycmd flycheck-rtags disaster cpp-auto-include company-ycmd ycmd request-deferred deferred company-rtags rtags company-c-headers ccls yasnippet-snippets unfill mwim lsp-ui lsp-treemacs lsp-origami origami helm-lsp lsp-mode markdown-mode dash-functional helm-company helm-c-yasnippet fuzzy flycheck-pos-tip pos-tip company auto-yasnippet yasnippet ac-ispell auto-complete ws-butler writeroom-mode visual-fill-column winum volatile-highlights vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil treemacs cfrs ht pfuture posframe toc-org symon symbol-overlay string-inflection spaceline-all-the-icons memoize all-the-icons spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode password-generator paradox spinner overseer org-superstar open-junk-file nameless move-text macrostep lorem-ipsum link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag google-translate golden-ratio flycheck-package package-lint flycheck flycheck-elsa flx-ido flx fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired f evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-cleverparens smartparens evil-args evil-anzu anzu eval-sexp-fu emr iedit clang-format projectile paredit list-utils pkg-info epl elisp-slime-nav editorconfig dumb-jump dash s dired-quick-sort devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile packed aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup which-key use-package pcre2el org-plus-contrib hydra lv hybrid-mode font-lock+ evil goto-chg dotenv-mode diminish bind-map bind-key async)))
+   '(dap-mode bui helm-rtags google-c-style flycheck-ycmd flycheck-rtags disaster cpp-auto-include company-ycmd ycmd request-deferred deferred company-rtags rtags company-c-headers ccls yasnippet-snippets unfill mwim lsp-ui lsp-treemacs lsp-origami origami helm-lsp lsp-mode markdown-mode dash-functional helm-company helm-c-yasnippet fuzzy flycheck-pos-tip pos-tip company auto-yasnippet yasnippet ac-ispell auto-complete ws-butler writeroom-mode visual-fill-column winum volatile-highlights vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil treemacs cfrs ht pfuture posframe toc-org symon symbol-overlay string-inflection spaceline-all-the-icons memoize all-the-icons spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode password-generator paradox spinner overseer org-superstar open-junk-file nameless move-text macrostep lorem-ipsum link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag google-translate golden-ratio flycheck-package package-lint flycheck flycheck-elsa flx-ido flx fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired f evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-cleverparens smartparens evil-args evil-anzu anzu eval-sexp-fu emr iedit clang-format projectile paredit list-utils pkg-info epl elisp-slime-nav editorconfig dumb-jump dash s dired-quick-sort devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile packed aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup which-key use-package pcre2el org-plus-contrib hydra lv hybrid-mode font-lock+ evil goto-chg dotenv-mode diminish bind-map bind-key async))
+ '(safe-local-variable-values
+   '((ccls-initialization-options :compilationDatabaseDirectory "build" :cache
+                                  (:directory "build/.ccls-cache"))
+     (helm-make-args . "-j7")
+     (projectile-project-configure-cmd . "cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .")
+     (projectile-project-run-cmd . "make && cd test && ./omega_test")
+     (projectile-project-name . "omega")
+     (cmake-ide-cmake-opts . "-DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON")
+     (cmake-ide-build-dir . "~/Projects/omega/build")
+     (cmake-ide-project-dir . "~/Projects/omega")
+     (eval setq projectile-project-test-cmd #'helm-ctest projectile-project-compilation-cmd #'helm-make-projectile projectile-project-compilation-dir "build" helm-make-build-dir
+           (projectile-compilation-dir)
+           helm-ctest-dir
+           (projectile-compilation-dir)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

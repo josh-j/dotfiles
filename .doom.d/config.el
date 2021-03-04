@@ -24,8 +24,15 @@
 (doom-themes-treemacs-config)
 (doom-themes-org-config)
 
+
+;;;; Smooth-scrolling
+(setq scroll-conservatively 101
+      scroll-preserve-screen-position t
+      scroll-margin 0)
+
 
 ;;; Misc
+
 ;;;; Window splitting
 (setq evil-vsplit-window-right t
       evil-split-window-below t)

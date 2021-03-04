@@ -25,7 +25,7 @@
       +pretty-code-hasklig-font-name "Hasklig"
       +pretty-code-iosevka-font-name "Iosevka")
 
-(setq display-line-numbers-type 'relative)
+;; (setq doom-line-numbers-style 'relative)
 
 ;;;; Frames/Windows
 ;;;;; Maximize window
@@ -72,7 +72,7 @@
 (setq org-plantuml-jar-path "~/path/to/plantuml.jar")
 
 ;;; Garbage Collection
-(setq garbage-collection-messages nil)  ; For debugging
+(setq garbage-collection-messages t)  ; For debugging
 (setq gcmh-high-cons-threshold (* 1024 1024 3))
 
 ;;; LSP trickery

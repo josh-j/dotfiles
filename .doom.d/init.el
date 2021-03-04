@@ -29,11 +29,11 @@
        nav-flash              ; blink the current line after jumping
        ophints                ; highlight the region an operation acts on
        popup                  ; tame sudden yet inevitable temporary windows
-       ligatures              ; replace bits of code with pretty symbols
+       ;; ligatures              ; replace bits of code with pretty symbols
        (modeline +light)
        treemacs                      ; a project drawer, like neotree but cooler
        ;; unicode                ; extended unicode support for various languages
-       vc-gutter              ; vcs diff in the fringe
+       ;; vc-gutter              ; vcs diff in the fringe
        vi-tilde-fringe        ; fringe tildes to mark beyond EOB
        window-select          ; visually switch windows
        ;;tab-workspaces             ; tab emulation, persistence & separate workspaces
@@ -61,7 +61,7 @@
                                         ;vterm
 
        :checkers
-       (syntax +childframe)          ; tasing you for every semicolon you forget
+       (syntax)          ; tasing you for every semicolon you forget
        (spell +aspell)               ; tasing you for misspelling mispelling
 
        :tools
@@ -121,7 +121,7 @@
 
        :config
        (default +bindings)
-       smartparens                      ; PRIVATE smartparens configuration
+       ;; smartparens                      ; PRIVATE smartparens configuration
 
        :private
        my-cc                        ; PRIVATE configuration for C-like languages

@@ -21,6 +21,7 @@
 ;; (package! org-jira)
                                         ;(package! ccls)
                                         ;(package! rg)
+(package! lsp-treemacs)
 (package! company-prescient)
 
 ;;; Themes

@@ -12,18 +12,18 @@
 ;;; UI
 ;; Ignore errors if the fonts aren't found.
 ;;(ignore-errors
-  (setq doom-font (font-spec :family "Iosevka" :weight 'normal :slant 'normal :width 'expanded :size 14)
-        doom-big-font (font-spec :family "JetBrains Mono" :size 26)
-        doom-variable-pitch-font (font-spec :family "JetBrains Mono" :height 0.5)
-        doom-serif-font (font-spec :family "Noto Sans" :height 1.0))
+(setq doom-font (font-spec :family "Iosevka" :weight 'normal :slant 'normal :width 'expanded :size 14))
+   ;;     doom-big-font (font-spec :family "JetBrains Mono" :size 26)
+  ;;      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :height 0.5)
+ ;;       doom-serif-font (font-spec :family "Noto Sans" :height 1.0))
 
-(setq doom-modeline-height 1)
+;;(setq doom-modeline-height 1)
 ;;(set-face-attribute 'mode-line nil :family "Iosevka Term Regular" :size 10) ;;smaller font in modeling
 ;;(set-face-attribute 'mode-line-inactive nil :family "Iosevka Term Regular" :size 10)
 
-(setq +pretty-code-fira-font-name "Fira Code Symbol"
-      +pretty-code-hasklig-font-name "Hasklig"
-      +pretty-code-iosevka-font-name "Iosevka")
+;;(setq +pretty-code-fira-font-name "Fira Code Symbol"
+;;      +pretty-code-hasklig-font-name "Hasklig"
+;;      +pretty-code-iosevka-font-name "Iosevka")
 
 ;; (setq doom-line-numbers-style 'relative)
 
@@ -67,16 +67,16 @@
   (global-set-key (kbd "M-ˍ") 'ns-do-hide-others) ;; what describe-key reports for cmd-option-h
   )
 
-;;; Org
-(setq org-directory (file-name-as-directory "~/Projects/org/"))
-(setq org-plantuml-jar-path "~/path/to/plantuml.jar")
+;; ;;; Org
+;; (setq org-directory (file-name-as-directory "~/Projects/org/"))
+;; (setq org-plantuml-jar-path "~/path/to/plantuml.jar")
 
-;;; Garbage Collection
-(setq garbage-collection-messages t)  ; For debugging
-(setq gcmh-high-cons-threshold (* 1024 1024 3))
+;; ;;; Garbage Collection
+;; (setq garbage-collection-messages t)  ; For debugging
+;; (setq gcmh-high-cons-threshold (* 1024 1024 3))
 
-;;; LSP trickery
-(setq read-process-output-max (* 1024 1024)) ; 1 MiB >> 4KB
-(setq lsp-file-watch-threshold 50)
-;; (setq +lua-lsp-dir "/home/jdoe/soft/lua-language-server/")
-;; (setq lsp-clients-lua-language-server-install-dir "/home/jdoe/soft/lua-language-server")
+;; ;;; LSP trickery
+;; (setq read-process-output-max (* 1024 1024)) ; 1 MiB >> 4KB
+;; (setq lsp-file-watch-threshold 50)
+;; ;; (setq +lua-lsp-dir "/home/jdoe/soft/lua-language-server/")
+;; ;; (setq lsp-clients-lua-language-server-install-dir "/home/jdoe/soft/lua-language-server")

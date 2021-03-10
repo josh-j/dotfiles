@@ -11,12 +11,8 @@
 
 ;;; Tools
 ;(package! imenu-list) ;; for c++ outline
-;; (package! jinja2-mode)
-;(package! aggressive-indent)
 (package! realgud-lldb)
-                                        ;(package! key-quiz)
-;; (package! fish-completion)
-                                        ;(package! outshine)
+;(package! outshine)
 ;; (package! evil-escape :disable t)
 ;; (package! org-jira)
                                         ;(package! ccls)
@@ -33,8 +29,8 @@
 ;(package! solaire-mode :disable t)
 
 ;;; UI
-(package! page-break-lines)
-(package! info-colors)
+;;(package! page-break-lines)
+;;(package! info-colors)
 
 
 ;;; Org
@@ -43,11 +39,11 @@
 
 ;;; Languages
 ;;;; Golang
-(package! flycheck-golangci-lint)
+;;(package! flycheck-golangci-lint)
 ;;;; Python
-(package! blacken)
-(package! anaconda-mode :disable t)
-(package! nose :disable t)
+;;(package! blacken)
+;;(package! anaconda-mode :disable t)
+;;(package! nose :disable t)
 ;;;; Djinni
 ;; (package! djinni-mode)
 ;;;; Asciidoc
@@ -59,11 +55,11 @@
 ;; (package! company-flow)
 ;; (package! flow-minor-mode)
 ;;;; PKGBUILD
-(package! pkgbuild-mode)
+;;(package! pkgbuild-mode)
 ;;;; Elisp
-(package! flycheck-package)
+;;(package! flycheck-package)
 ;;;; Rust (Pest mode)
-(package! pest-mode)
+;;(package! pest-mode)
 
 
 ;; Local workspaces packages

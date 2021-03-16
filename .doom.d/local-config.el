@@ -12,7 +12,7 @@
 ;;; UI
 ;; Ignore errors if the fonts aren't found.
 ;;(ignore-errors
-(setq doom-font (font-spec :family "Iosevka" :weight 'normal :slant 'normal :width 'expanded :size 14))
+(setq doom-font (font-spec :family "JetBrains Mono" :weight 'medium :slant 'normal :width 'expanded :size 14))
    ;;     doom-big-font (font-spec :family "JetBrains Mono" :size 26)
   ;;      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :height 0.5)
  ;;       doom-serif-font (font-spec :family "Noto Sans" :height 1.0))

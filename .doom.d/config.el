@@ -105,7 +105,16 @@
 (after! flycheck
   (setq flycheck-display-errors-delay 0.1))
 
-
+;;;; Compilation Buffer
+(add-hook 'compilation-finish-functions
+  (lambda (buf str)
+    (if (null (string-match ".*exited abnormally.*" str))
+        ;;no errors, make the compilation window go away in a few seconds
+        (progn
+          (run-at-time
+           "2 sec" nil 'delete-windows-on
+           (get-buffer-create "*compilation*"))
+          (message "No Compilation Errors!")))))
 
 ;;; Non-Doom packages
 
@@ -127,6 +136,12 @@
 ;;         flymake-proc-compilation-prevents-syntax-check t
 ;;         flymake-wrap-around nil))
 
+;;;; Google-C-Style
+(use-package! google-c-style
+  :after cc-mode
+  :config
+  (c-add-style "Google" google-c-style)
+  (setf (alist-get 'c++-mode c-default-style) "Google"))
 
 ;;; company
 (after! company

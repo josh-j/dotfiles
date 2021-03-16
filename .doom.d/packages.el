@@ -37,6 +37,7 @@
 ;(package! ox-gfm)
 
 
+(package! google-c-style)
 ;;; Languages
 ;;;; Golang
 ;;(package! flycheck-golangci-lint)
